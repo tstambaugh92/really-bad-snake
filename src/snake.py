@@ -6,8 +6,8 @@ class Snake:
         self.body = [[0,0]]
         self.direction = 'E'
         self.is_dead = False
-        self.move_delay = 3
-        self.max_move_delay = 3
+        self.move_delay = 5
+        self.max_move_delay = 5
         self.eaten = False
     
     def getBody(self):
@@ -48,6 +48,10 @@ class Snake:
             #expand if an apple was eaten
             if self.eaten:
                 self.eaten = False
+                if ((len(self.getBody()) - 1) % SCORE_SPEEDUP == 0 
+                    and self.max_move_delay > 1):
+                    #Speed up every SCORE_SPEEDUP points
+                    self.max_move_delay -=1
             else:
                 self.body.pop()
                 

@@ -72,10 +72,41 @@ def main():
     random.seed()
     pygame.init()
     pygame.display.set_caption('Very Bad Snake')
+    titlePic = pygame.image.load('../img/title.png')
+    playButton = pygame.image.load('../img/play.png')
+    quitButton = pygame.image.load('../img/quit.png')
     game_window = pygame.display.set_mode((800, 600))
+    playButtonPos = (200,400)
+    quitButtonPos = (430,400)
+    game_window.blit(titlePic, (0,0))
+    game_window.blit(playButton, playButtonPos)
+    game_window.blit(quitButton, quitButtonPos)
+    pygame.display.update()
+    pygame.time.wait(2500)
     quit = False
     while quit == False:
-        quit = playGame(game_window)
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouseX, mouseY = pygame.mouse.get_pos()
+                print(str(mouseX) + "," + str(mouseY))
+                if playButtonPos[1] <= mouseY <= playButtonPos[1] + 100:
+                    if playButtonPos[0] <= mouseX <= playButtonPos[0] + 200:
+                        quit = playGame(game_window)
+                        game_window.blit(titlePic, (0,0))
+                        game_window.blit(playButton, playButtonPos)
+                        game_window.blit(quitButton, quitButtonPos)
+                        pygame.display.update()
+                    elif quitButtonPos[0] <= mouseX <= quitButtonPos[0] + 200:
+                        quit = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    quit = playGame(game_window)
+                    game_window.blit(titlePic, (0,0))
+                    game_window.blit(playButton, playButtonPos)
+                    game_window.blit(quitButton, quitButtonPos)
+                    pygame.display.update()
+            elif event.type == pygame.QUIT:
+                quit = True
     
     
 
