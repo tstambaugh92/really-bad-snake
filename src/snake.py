@@ -1,5 +1,6 @@
 #Snake class
 #For Very Bad Snake
+import pygame
 from config import *
 class Snake:
     def __init__(self):
@@ -9,6 +10,8 @@ class Snake:
         self.move_delay = 5
         self.max_move_delay = 5
         self.eaten = False
+        self.cry = pygame.mixer.Sound('../audio/cry.ogg')
+        self.gulp = pygame.mixer.Sound('../audio/gulp.ogg')
     
     def getBody(self):
         return self.body
@@ -61,10 +64,13 @@ class Snake:
 
     def eat(self):
         self.eaten = True
+        self.gulp.play()
         return
     
     def die(self):
         self.is_dead = True
+        self.cry.play()
+        return
         
     def isHeDead(self):
         return self.is_dead

@@ -71,10 +71,19 @@ def playGame(game_window):
 def main():
     random.seed()
     pygame.init()
+    pygame.mixer.init()
     pygame.display.set_caption('Very Bad Snake')
+    
+    #load images
     titlePic = pygame.image.load('../img/title.png')
     playButton = pygame.image.load('../img/play.png')
     quitButton = pygame.image.load('../img/quit.png')
+    
+    #load music
+    pygame.mixer.music.load('../audio/midsummers.mp3')
+    pygame.mixer.music.play(loops=-1)
+    
+    #create window and boot title screen
     game_window = pygame.display.set_mode((800, 600))
     playButtonPos = (200,400)
     quitButtonPos = (430,400)
@@ -88,7 +97,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouseX, mouseY = pygame.mouse.get_pos()
-                print(str(mouseX) + "," + str(mouseY))
                 if playButtonPos[1] <= mouseY <= playButtonPos[1] + 100:
                     if playButtonPos[0] <= mouseX <= playButtonPos[0] + 200:
                         quit = playGame(game_window)
