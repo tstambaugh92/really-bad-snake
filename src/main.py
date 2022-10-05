@@ -116,6 +116,9 @@ def main():
     titlePic = pygame.image.load('../img/title.png')
     playButton = pygame.image.load('../img/play.png')
     quitButton = pygame.image.load('../img/quit.png')
+    icon = pygame.image.load('../img/icon.png')
+    icon = pygame.transform.scale(icon,(32,32))
+    pygame.display.set_icon(icon)
     
     #load music
     pygame.mixer.music.load('../audio/midsummers.mp3')
