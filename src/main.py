@@ -7,15 +7,10 @@ from config import *
 from snake import Snake
 from apple import Apple
 
-def main():
-    random.seed()
+
+def playGame(game_window):
     snake = Snake()
     apple = Apple()
-    pygame.init()
-    pygame.display.set_caption('Very Bad Snake')
-    game_window = pygame.display.set_mode((800, 600))
-    game_is_running = True
-    
     blank_board = pygame.Surface((800, 600))
     blank_board.fill(pygame.Color('#000000'))
     
@@ -24,8 +19,11 @@ def main():
     
     apple_piece = pygame.Surface((BODY_SIZE,BODY_SIZE))
     apple_piece.fill(pygame.Color('#FFFF00'))
+    
     score = 0
     quit = False
+    game_is_running = True
+    
     while game_is_running: #main loop
         #user input
         direction = 'X'
@@ -45,13 +43,13 @@ def main():
 
         #game logic
         snake.move(direction)
-        if snake.getHead() == apple.getPos():
+        if snake.isHeDead() == True:
+            game_is_running = False
+        elif snake.getHead() == apple.getPos():
             snake.eat()
             score+=1
             pygame.display.set_caption('Very Bad Snake - Score: ' + str(score))
             apple.regrow(snake.getBody())
-        if snake.isHeDead() == True:
-            game_is_running = False
         
         #graphics
         game_window.blit(blank_board, (0, 0))
@@ -65,6 +63,22 @@ def main():
         
     if quit == False:
         pygame.time.wait(2000)
+    pygame.event.clear
+        
+    return quit
+    
+
+def main():
+    random.seed()
+    pygame.init()
+    pygame.display.set_caption('Very Bad Snake')
+    game_window = pygame.display.set_mode((800, 600))
+    quit = False
+    while quit == False:
+        quit = playGame(game_window)
+    
+    
+
     
 if __name__ == '__main__':
     main()

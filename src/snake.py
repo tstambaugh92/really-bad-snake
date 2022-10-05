@@ -20,8 +20,12 @@ class Snake:
         self.move_delay = self.move_delay - 1
         new_pos = self.getHead().copy()
         
-        if direction != 'X':
+        if ((direction == 'E' and self.direction != 'W')
+            or (direction == 'W' and self.direction != 'E')
+            or (direction == 'N' and self.direction != 'S')
+            or (direction == 'S' and self.direction != 'N')):
             self.direction = direction
+            
             
         if self.move_delay == 0:
             if self.direction == 'W':
