@@ -67,6 +67,44 @@ def playGame(game_window):
         
     return quit
     
+def exitScreen(game_window):
+    #load files
+    blank_board = pygame.Surface((800, 600))
+    blank_board.fill(pygame.Color('#000000'))
+    game_window.blit(blank_board,(0,0))
+    pygame.display.update()
+    pygame.mixer.music.stop()
+    logo = pygame.image.load('../img/LOGO.png')
+    hawkmaster = pygame.image.load('../img/hawkmaster.jpg')
+    hawkmaster = pygame.transform.scale(hawkmaster, (300,300))
+    hawkmaster.set_alpha(0)
+    FLY_WITH_CHRIST = pygame.mixer.Sound('../audio/FlyWithChrist.ogg')
+    hawkmasters_endorsement = pygame.mixer.Sound('../audio/MadeThisGame.ogg')
+    
+    #play sequence
+    FLY_WITH_CHRIST.play()
+    pygame.time.wait(1000)
+    game_window.blit(logo, (0,200))
+    pygame.display.update()
+    pygame.time.wait(3500)
+    for i in range(255,-1,-1):
+        logo.set_alpha(i)
+        game_window.blit(blank_board,(0,0))
+        game_window.blit(logo, (0,200))
+        pygame.display.update()
+        pygame.time.delay(3)
+    pygame.time.delay(400)
+    hawkmasters_endorsement.play()
+    for i in range(1,256,1):
+        hawkmaster.set_alpha(i)
+        game_window.blit(blank_board,(0,0))
+        game_window.blit(hawkmaster, (250,150)) 
+        pygame.display.update()
+        pygame.time.delay(3)       
+    pygame.time.delay(2700)
+    
+    
+    return
 
 def main():
     random.seed()
@@ -115,6 +153,9 @@ def main():
                     pygame.display.update()
             elif event.type == pygame.QUIT:
                 quit = True
+    
+    exitScreen(game_window)
+    return
     
     
 
