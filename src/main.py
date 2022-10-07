@@ -40,10 +40,15 @@ def playGame(game_window):
                     direction = 'W'
                 elif event.key == pygame.K_d:
                     direction = 'E'
+                snake.addMove(direction)
+                if DEBUG:
+                    print("Direction switched: " + direction)
 
         #game logic
-        snake.move(direction)
+        snake.move()
         if snake.isHeDead() == True:
+            if DEBUG:
+                print("The Snake is dead")
             game_is_running = False
         elif snake.getHead() == apple.getPos():
             snake.eat()
@@ -52,19 +57,18 @@ def playGame(game_window):
             apple.regrow(snake.getBody())
         
         #graphics
-        game_window.blit(blank_board, (0, 0))
-        for tile in snake.getBody():
-            game_window.blit(snake_piece, (tile[0] * BODY_SIZE, tile[1] * BODY_SIZE))
-        game_window.blit(apple_piece, (apple.getX() * BODY_SIZE, apple.getY() * BODY_SIZE))
-        pygame.display.update()
+        if game_is_running:
+            game_window.blit(blank_board, (0, 0))
+            for tile in snake.getBody():
+                game_window.blit(snake_piece, (tile[0] * BODY_SIZE, tile[1] * BODY_SIZE))
+            game_window.blit(apple_piece, (apple.getX() * BODY_SIZE, apple.getY() * BODY_SIZE))
+            pygame.display.update()
         
         #wait
         pygame.time.wait(int(1000/60)) #1/60th of a second, or '60fps'
         
-    if quit == False:
-        pygame.time.wait(2000)
-    pygame.event.clear
-        
+    pygame.event.clear 
+    print("Ending playGame()")
     return quit
     
 def exitScreen(game_window):
@@ -114,6 +118,7 @@ def main():
     
     #load images
     titlePic = pygame.image.load('../img/title.png')
+    deathPic = pygame.image.load('../img/title2.png')
     playButton = pygame.image.load('../img/play.png')
     quitButton = pygame.image.load('../img/quit.png')
     icon = pygame.image.load('../img/icon.png')
@@ -121,7 +126,7 @@ def main():
     pygame.display.set_icon(icon)
     
     #load music
-    pygame.mixer.music.load('../audio/midsummers.mp3')
+    pygame.mixer.music.load('../audio/midsummers.ogg')
     pygame.mixer.music.play(loops=-1)
     
     #create window and boot title screen
@@ -141,7 +146,7 @@ def main():
                 if playButtonPos[1] <= mouseY <= playButtonPos[1] + 100:
                     if playButtonPos[0] <= mouseX <= playButtonPos[0] + 200:
                         quit = playGame(game_window)
-                        game_window.blit(titlePic, (0,0))
+                        game_window.blit(deathPic, (0,0))
                         game_window.blit(playButton, playButtonPos)
                         game_window.blit(quitButton, quitButtonPos)
                         pygame.display.update()
@@ -150,7 +155,7 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     quit = playGame(game_window)
-                    game_window.blit(titlePic, (0,0))
+                    game_window.blit(deathPic, (0,0))
                     game_window.blit(playButton, playButtonPos)
                     game_window.blit(quitButton, quitButtonPos)
                     pygame.display.update()
