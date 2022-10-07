@@ -90,7 +90,8 @@ class Snake:
             if DEBUG:
                 print("ch1 is " + str(ch1.get_busy()) + " ch2 is " + str(ch2.get_busy()))
         pygame.mixer.music.unpause()
-        print("Done Dying")
+        if DEBUG:
+            print("Done Dying")
         return
         
     def isHeDead(self):

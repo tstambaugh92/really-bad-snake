@@ -6,6 +6,7 @@ from config import *
 
 from snake import Snake
 from apple import Apple
+from button import Button
 
 
 def playGame(game_window):
@@ -68,7 +69,8 @@ def playGame(game_window):
         pygame.time.wait(int(1000/60)) #1/60th of a second, or '60fps'
         
     pygame.event.clear 
-    print("Ending playGame()")
+    if DEBUG:
+        print("Ending playGame()")
     return quit
     
 def exitScreen(game_window):
@@ -119,8 +121,8 @@ def main():
     #load images
     titlePic = pygame.image.load('../img/title.png')
     deathPic = pygame.image.load('../img/title2.png')
-    playButton = pygame.image.load('../img/play.png')
-    quitButton = pygame.image.load('../img/quit.png')
+    playButton = Button('../img/play.png', (200,100))
+    quitButton = Button('../img/quit.png', (200,100))
     icon = pygame.image.load('../img/icon.png')
     icon = pygame.transform.scale(icon,(32,32))
     pygame.display.set_icon(icon)
@@ -133,35 +135,36 @@ def main():
     game_window = pygame.display.set_mode((800, 600))
     playButtonPos = (200,400)
     quitButtonPos = (430,400)
-    game_window.blit(titlePic, (0,0))
-    game_window.blit(playButton, playButtonPos)
-    game_window.blit(quitButton, quitButtonPos)
-    pygame.display.update()
-    pygame.time.wait(2500)
     quit = False
+    reload_title = True
+    titleScreen = titlePic
     while quit == False:
         for event in pygame.event.get():
+            #button clicks
             if event.type == pygame.MOUSEBUTTONDOWN:
-                mouseX, mouseY = pygame.mouse.get_pos()
-                if playButtonPos[1] <= mouseY <= playButtonPos[1] + 100:
-                    if playButtonPos[0] <= mouseX <= playButtonPos[0] + 200:
-                        quit = playGame(game_window)
-                        game_window.blit(deathPic, (0,0))
-                        game_window.blit(playButton, playButtonPos)
-                        game_window.blit(quitButton, quitButtonPos)
-                        pygame.display.update()
-                    elif quitButtonPos[0] <= mouseX <= quitButtonPos[0] + 200:
-                        quit = True
+                mousePos = pygame.mouse.get_pos()
+                if playButton.wasItClicked(mousePos):
+                    quit = playGame(game_window)
+                    reload_title = True
+                if quitButton.wasItClicked(mousePos):
+                    quit = True
+            #hot key for quitting
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     quit = playGame(game_window)
-                    game_window.blit(deathPic, (0,0))
-                    game_window.blit(playButton, playButtonPos)
-                    game_window.blit(quitButton, quitButtonPos)
-                    pygame.display.update()
+                    reload_title = True
+            #Windows exit button
             elif event.type == pygame.QUIT:
                 quit = True
-    
+                
+        if reload_title == True and quit == False:
+            reload_title = False
+            game_window.blit(titleScreen, (0,0))
+            playButton.display(game_window, playButtonPos)
+            quitButton.display(game_window, quitButtonPos)
+            pygame.display.update()
+            titleScreen = deathPic
+            
     exitScreen(game_window)
     return
     
