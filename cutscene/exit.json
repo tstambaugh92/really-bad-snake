@@ -1,0 +1,47 @@
+{
+    "name" : "exit sequence",
+    "images" : {
+        "logo" : "LOGO.png",
+        "hmstambaugh" : "hawkmaster.jpg"  
+    },
+    "music" : {
+    },
+    "sounds" : {
+        "FlyWithChrist" : "FlyWithChrist.ogg",
+        "HawkmasterEndorse" : "MadeThisGame.ogg"
+    },
+    "fonts" : {
+    },
+    "text" :  {
+    },
+    "steps" : {
+        "1" : {
+            "type" : "clearScreen",
+            "data" : {
+                "color" : "#000000",
+                "save" : true
+            }
+        },
+        "2" : {
+            "type" : "displayCenterImage",
+            "data" : {
+                "img" : "logo",
+                "pos" : [400,300],
+                "save" : false
+            }
+        },
+        "3" : {
+            "type" : "playSound",
+            "data" : {
+                "sound" : "FlyWithChrist",
+                "channel" : 0
+            }
+        },
+        "4" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 6000
+            }
+        }
+    }
+}

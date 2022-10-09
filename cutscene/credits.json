@@ -1,0 +1,67 @@
+{
+    "name" : "credits sequence",
+    "images" : {
+        "logo" : "LOGO.png"        
+    },
+    "music" : {
+        "shanty" : "shanty.ogg"
+    },
+    "sounds" : {
+        "tyler" : "death/TylerDeathFull.ogg",
+        "FlyWithChrist" : "FlyWithChrist.ogg"
+    },
+    "fonts" : {
+        "small" : {
+            "file" : "danielbd.ttf",
+            "size" : 30
+        },
+        "big" : {
+            "file" : "danielbd.ttf",
+            "size" : 50
+        }
+    },
+    "text" :  {
+        "title" : "Really Bad Snake",
+        "madeBy" : "Made By",
+        "CHGS" : "Christ Hawk Game Studio",
+        "star" : "Sad Snake Fan",
+        "HMs" : "Hawkmaster Stambaugh",
+        "KHt" : "Knighthawk Tyler",
+        "clpz" : "Captain' Salty",
+        "ystm" : "Hawkqueen Stambaugh",
+        "tiny" : "Tiny Accident"
+    },
+    "steps" : {
+        "1" : {
+            "type" : "clearScreen",
+            "data" : {
+                "color" : "#000000",
+                "save" : true
+            }
+        },
+        "2" : {
+            "type" : "playMusic",
+            "data" : {
+                "name" : "shanty",
+                "channel" : 0
+            }
+        },
+        "3" : {
+            "type" : "fadeTextIn",
+            "data" : {
+                "text" : "title",
+                "font" : "big",
+                "time" : 1000,
+                "pos" : [400,60],
+                "color" : [255,0,0],
+                "save" : true
+            }
+        },
+        "4" : {
+            "type" : "playRestOfMusic",
+            "data" : {
+                "channel" : 0
+            }
+        }
+    }
+}

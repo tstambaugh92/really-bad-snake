@@ -3,6 +3,7 @@
 import pygame
 import random
 from config import *
+
 class Snake:
     def __init__(self):
         self.body = [[0,0]]

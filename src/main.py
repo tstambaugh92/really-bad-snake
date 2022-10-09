@@ -1,5 +1,6 @@
 #Thomas Stambaugh
 #Really Bad Snake
+from imp import reload
 import pygame
 import random
 from config import *
@@ -7,6 +8,7 @@ from config import *
 from snake import Snake
 from apple import Apple
 from button import Button
+from cutscene import Cutscene
 
 
 def playGame(game_window):
@@ -75,47 +77,22 @@ def playGame(game_window):
     
 def exitScreen(game_window):
     #load files
-    blank_board = pygame.Surface((800, 600))
-    blank_board.fill(pygame.Color('#000000'))
-    game_window.blit(blank_board,(0,0))
-    pygame.display.update()
     pygame.mixer.music.stop()
-    logo = pygame.image.load('../img/LOGO.png')
-    hawkmaster = pygame.image.load('../img/hawkmaster.jpg')
-    hawkmaster = pygame.transform.scale(hawkmaster, (300,300))
-    hawkmaster.set_alpha(0)
-    FLY_WITH_CHRIST = pygame.mixer.Sound('../audio/FlyWithChrist.ogg')
-    hawkmasters_endorsement = pygame.mixer.Sound('../audio/MadeThisGame.ogg')
-    
-    #play sequence
-    FLY_WITH_CHRIST.play()
-    pygame.time.wait(1000)
-    game_window.blit(logo, (0,200))
-    pygame.display.update()
-    pygame.time.wait(3500)
-    for i in range(255,-1,-1):
-        logo.set_alpha(i)
-        game_window.blit(blank_board,(0,0))
-        game_window.blit(logo, (0,200))
-        pygame.display.update()
-        pygame.time.delay(3)
-    pygame.time.delay(400)
-    hawkmasters_endorsement.play()
-    for i in range(1,256,1):
-        hawkmaster.set_alpha(i)
-        game_window.blit(blank_board,(0,0))
-        game_window.blit(hawkmaster, (250,150)) 
-        pygame.display.update()
-        pygame.time.delay(3)       
-    pygame.time.delay(2700)
-    
-    
+    exit_cs = Cutscene("../cutscene/exit.json", game_window)
+    exit_cs.play()
     return
+
+def credits(game_window):
+    credit_cs = Cutscene("../cutscene/credits.json", game_window)
+    credit_cs.play()
+    return
+    
 
 def main():
     random.seed()
     pygame.init()
     pygame.mixer.init()
+    pygame.font.init()
     pygame.display.set_caption('Very Bad Snake')
     
     #load images
@@ -123,6 +100,7 @@ def main():
     deathPic = pygame.image.load('../img/title2.png')
     playButton = Button('../img/play.png', (200,100))
     quitButton = Button('../img/quit.png', (200,100))
+    creditsButton = Button('../img/credits.png', (200,50))
     icon = pygame.image.load('../img/icon.png')
     icon = pygame.transform.scale(icon,(32,32))
     pygame.display.set_icon(icon)
@@ -135,6 +113,7 @@ def main():
     game_window = pygame.display.set_mode((800, 600))
     playButtonPos = (200,400)
     quitButtonPos = (430,400)
+    creditsButtonPos = (430,520)
     quit = False
     reload_title = True
     titleScreen = titlePic
@@ -145,13 +124,20 @@ def main():
                 mousePos = pygame.mouse.get_pos()
                 if playButton.wasItClicked(mousePos):
                     quit = playGame(game_window)
+                    titleScreen = deathPic
                     reload_title = True
                 if quitButton.wasItClicked(mousePos):
                     quit = True
-            #hot key for quitting
+                if creditsButton.wasItClicked(mousePos):
+                    pygame.mixer.music.pause()
+                    credits(game_window)
+                    pygame.mixer.music.unpause()
+                    reload_title = True
+            #hot key for starting
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     quit = playGame(game_window)
+                    titleScreen = deathPic
                     reload_title = True
             #Windows exit button
             elif event.type == pygame.QUIT:
@@ -162,14 +148,11 @@ def main():
             game_window.blit(titleScreen, (0,0))
             playButton.display(game_window, playButtonPos)
             quitButton.display(game_window, quitButtonPos)
+            creditsButton.display(game_window, creditsButtonPos)
             pygame.display.update()
-            titleScreen = deathPic
             
     exitScreen(game_window)
     return
-    
-    
 
-    
 if __name__ == '__main__':
     main()
