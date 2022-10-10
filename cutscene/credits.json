@@ -1,7 +1,8 @@
 {
     "name" : "credits sequence",
     "images" : {
-        "logo" : "LOGO.png"        
+        "logo" : "LOGO.png",
+        "tiny" : "Credits/TinyAccident.JPG"      
     },
     "music" : {
         "shanty" : "shanty.ogg"
@@ -29,7 +30,11 @@
         "KHt" : "Knighthawk Tyler",
         "clpz" : "Captain' Salty",
         "ystm" : "Hawkqueen Stambaugh",
-        "tiny" : "Tiny Accident"
+        "tiny" : "Tiny Accident",
+        "as" : "as",
+        "special" : "With a special thanks",
+        "toYou" : "TO YOU!",
+        "fwc" : "Fly With Christ"
     },
     "steps" : {
         "1" : {
@@ -58,6 +63,49 @@
             }
         },
         "4" : {
+            "type" : "fadeTextIn",
+            "data" : {
+                "text" : "madeBy",
+                "font" : "small",
+                "time" : 1000,
+                "pos" : [400,110],
+                "color" : [255,0,0],
+                "save" : true
+            }
+        },
+        "5" : {
+            "type" : "fadeTextIn",
+            "data" : {
+                "text" : "CHGS",
+                "font" : "big",
+                "time" : 1000,
+                "pos" : [400,160],
+                "color" : [255,0,0],
+                "save" : true
+            }
+        },
+        "6" : {
+            "type" : "saveScreen",
+            "data" : {
+
+            }
+        },
+        "7" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 1000
+            }
+        },
+        "8" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [200, 100]
+            }
+        },
+        "9" : {
+
+        },
+        "8" : {
             "type" : "playRestOfMusic",
             "data" : {
                 "channel" : 0

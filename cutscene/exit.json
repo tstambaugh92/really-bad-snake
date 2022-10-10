@@ -38,10 +38,59 @@
             }
         },
         "4" : {
+            "type" : "playRestOfSound",
+            "data" : {
+                "channel" : 0
+            }
+        },
+        "5" : {
+            "type" : "clearScreen",
+            "data" : {
+                "color" : "#000000",
+                "save" : false
+            }
+        },
+        "6" : {
             "type" : "delay",
             "data" : {
-                "time" : 6000
+                "time" : 1000
+            }
+        },
+        "7" : {
+            "type" : "playSound",
+            "data" : {
+                "sound" : "HawkmasterEndorse",
+                "channel" : 0
+            }
+        },
+        "8" : {
+            "type" : "resizeImage",
+            "data" : {
+                "img" : "hmstambaugh",
+                "size" : [300, 320]
+            }
+        },
+        "9" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "time" : 1000,
+                "save" : false,
+                "img" : "hmstambaugh",
+                "pos" : [400,300]
+            }
+        },
+        "10" : {
+            "type" : "playRestOfSound",
+            "data" : {
+                "channel" : 0
+            }
+        },
+        "11" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 1000
             }
         }
+
     }
 }

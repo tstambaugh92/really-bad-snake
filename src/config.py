@@ -5,6 +5,6 @@ BODY_SIZE = 20
 START_SPEED = 2
 SCORE_SPEEDUP = 10
 HIGH_SCORE = 0
-DEBUG = True
+DEBUG = False
 #Board is X by Y, with 0,0 being the upper left corner. 
 #Y value going up goes down the screen

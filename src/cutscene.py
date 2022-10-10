@@ -11,7 +11,24 @@ import json
 import pygame
 
 class Cutscene():
-    
+#A cutscene file is a JSON file
+#Template is found in template.json to explain
+#Each "type" for a step has a function below
+#draw_order is unsued this moment, planned to hold layers
+#
+#skip_key can be changed to skip the cutscene.
+#  If you skip the cutscene, whatever is currently on the screen is left
+#  Redraw your previous screen from before the cutscene, or load a premade
+#  post cutscene surface
+#
+#canvas is a drawing area to apply multiple images
+#  to a surface in multiple steps, but display it to the main
+#  window all at once. This is useful for multiline text
+#
+#save_screen is a surface to 'screen cap' the screen
+#  if you want to restore it latter
+#
+#TO DO: Add ability to keep multiple saved_screens and cavases
     def __init__(self, cs_file_str, game_window):
         if DEBUG:
             print("Loading " + cs_file_str)
@@ -19,10 +36,9 @@ class Cutscene():
             self.cs = json.load(cs_file)
         self.game_window = game_window
         self.drawOrder = []
-        self.step = 0
-        self.drawnImgs = []
+        self.canvas = pygame.surface.Surface((200,200))
+        self.saved_screen = pygame.surface.Surface((800,600))
         self.skip_key = pygame.K_SPACE
-        self.clock = pygame.time.Clock()
         self.loadImage(self.cs["images"])
         self.loadFonts(self.cs["fonts"])
         self.loadSound(self.cs["sounds"])
@@ -31,6 +47,7 @@ class Cutscene():
             print(cs_file_str + " loaded")
         return
     
+    ##Loading assets section
     def loadImage(self, image_list):
         if DEBUG:
             print("Loading images")
@@ -74,6 +91,7 @@ class Cutscene():
             print("Finished loading sound")
         return
     
+    #Run through all the steps and play them
     def play(self):
         if DEBUG:
             print("Playing " + self.cs["name"])
@@ -83,20 +101,31 @@ class Cutscene():
             if DEBUG:
                 print("  Playing step " + str(step_num))
             step = self.cs["steps"][str(step_num)]
-            if step["type"] == "playMusic":
+            step_type = step["type"]
+            if step_type == "playMusic":
                 skip = self.playMusic(step["data"])
-            elif step["type"] == "playRestOfMusic":
+            elif step_type == "playRestOfMusic":
                 skip = self.playRestOfMusic(step["data"])
-            elif step["type"] == "fadeTextIn":
+            elif step_type == "fadeTextIn":
                 skip = self.fadeTextIn(step["data"])
-            elif step["type"] == "delay":
+            elif step_type == "delay":
                 skip = self.delay(step["data"])
-            elif step["type"] == "playSound":
+            elif step_type == "playSound":
                 skip = self.playSound(step["data"])
-            elif step["type"] == "displayCenterImage":
+            elif step_type == "displayCenterImage":
                 skip = self.displayCenterImage(step["data"])
-            elif step["type"] == "clearScreen":
+            elif step_type == "clearScreen":
                 skip = self.clearScreen(step["data"])
+            elif step_type == "playRestOfSound":
+                skip = self.playRestOfSound(step["data"])
+            elif step_type == "fadeCenterImageIn":
+                skip = self.fadeCenterImageIn(step["data"])
+            elif step_type == "resizeImage":
+                skip = self.resizeImage(step["data"])
+            elif step_type == "saveScreen":
+                skip = self.saveScreen(step["data"])
+            elif step_type == "restoreScreen":
+                skip = self.restoreScreen(step["data"])
             if skip:
                 break
         
@@ -106,16 +135,140 @@ class Cutscene():
             print(" ")
         return
     
+    #Reusable logic for steps
     def wannaSkip(self):
+        #Checks if the SKIP key was pressed
+        #Returns True if it has, False otherwise
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == self.skip_key:
                     return True
         return False
     
-    def centerSurfaceAt(self, text, pos):
-        rect = text.get_rect()
+
+    def centerSurfaceAt(self, surf, pos):
+        #This will return (x,y) coordinates for where to blit
+        #surf(surface) so that its center is at pos(int,int)
+        rect = surf.get_rect()
         return (pos[0] - rect.w / 2, pos[1] - rect.h / 2)
+    
+    #Functions for the logic of each type of step. Will Document this
+    #Better because I'd like to reuse it. 
+    
+    def delay(self, step):
+        #delay - pauses any action for a time. 
+        #        no changes to the screen state will happen
+        #STEP keys:
+        #key - data type - desc
+        #time - int - milisections to delay
+        if DEBUG:
+            print("    Starting delay.")
+        for i in range(0, step["time"]):
+            if self.wannaSkip():
+                return True
+            pygame.time.delay(1)
+        if DEBUG: 
+            print("    Finished delay")
+        return False
+    
+    def displayCenterImage(self, step):
+        #displayCenterImage - centers an image on a position
+        #                     to the game_window at full alpha
+        #STEP keys:
+        #key - data type - desc
+        #img - img nickname - The key for the image in self.images
+        #pos - [int, int] - Location for the center of the image
+        if DEBUG:
+            print("    Displaying image " + step["img"])
+        img = self.images[step["img"]]
+        pos = self.centerSurfaceAt(img, step["pos"])
+        self.game_window.blit(img,pos)
+        pygame.display.update()
+        if DEBUG:
+            print("    Finish displaying image " + step["img"])
+        return self.wannaSkip()
+
+    def fadeCenterImageIn(self, step):
+        if DEBUG:
+            print("    Fading in image")
+        old_surf = pygame.surface.Surface((800,600))
+        old_surf.blit(self.game_window, (0,0))
+        delta = round(step["time"] / 256)
+        img = self.images[step["img"]]
+        pos = self.centerSurfaceAt(img, step["pos"])
+        for alpha in range(0, 256):
+            img.set_alpha(alpha)
+            self.game_window.blit(old_surf, (0,0))
+            self.game_window.blit(img, pos)
+            pygame.display.update()
+            pygame.time.delay(delta)
+            if self.wannaSkip():
+                return True
+        if DEBUG:
+            print("    Done fading in image")
+        return False
+    
+    def fadeCenterImageOut(self, step):
+        if DEBUG:
+            print("    Fading out image")
+        old_surf = pygame.surface.Surface((800,600))
+        old_surf.blit(self.game_window, (0,0))
+        delta = round(step["time"] / 256)
+        img = self.images[step["img"]]
+        pos = self.centerSurfaceAt(img, step["pos"])
+        for alpha in range(255,-1,-1):
+            img.set_alpha(alpha)
+            self.game_window.blit(old_surf, (0,0))
+            self.game_window.blit(img, pos)
+            pygame.display.update()
+            pygame.time.delay(delta)
+            if self.wannaSkip():
+                return True
+        if DEBUG:
+            print("    Done fading out image")
+        return False
+
+    def fadeTextIn(self, step):
+        if DEBUG:
+            print("    Fading in text")
+        old_surf = pygame.surface.Surface((800,600))
+        old_surf.blit(self.game_window, (0,0))
+        delta = round(step["time"] / 256)
+        font = self.fonts[step["font"]]
+        text_surf = font.render(self.cs["text"][step["text"]], True, tuple(step["color"]))
+        pos = self.centerSurfaceAt(text_surf, step["pos"])
+        for alpha in range(0, 256):
+            text_surf.set_alpha(alpha)
+            self.game_window.blit(old_surf, (0,0))
+            self.game_window.blit(text_surf, pos)
+            pygame.display.update()
+            pygame.time.delay(delta)
+            if self.wannaSkip():
+                return True
+        if DEBUG:
+            print("    Done fading in text")
+        return False
+    
+    def fadeTextOut(self, step):
+        if DEBUG:
+            print("    Fading out text")
+        old_surf = pygame.surface.Surface((800,600))
+        old_surf.blit(self.game_window, (0,0))
+        delta = round(step["time"] / 256)
+        font = self.fonts[step["font"]]
+        text_surf = font.render(self.cs["text"][step["text"]], True, tuple(step["color"]))
+        pos = self.centerSurfaceAt(text_surf, step["pos"])
+        for alpha in range(255, -1,-1):
+            text_surf.set_alpha(alpha)
+            self.game_window.blit(old_surf, (0,0))
+            self.game_window.blit(text_surf, pos)
+            pygame.display.update()
+            pygame.time.delay(delta)
+            if self.wannaSkip():
+                return True
+        if DEBUG:
+            print("    Done fading out text")
+        return False
     
     def playMusic(self, step):
         if DEBUG:
@@ -137,46 +290,16 @@ class Cutscene():
             print("    Done playing the rest of the music")
         return False
     
-    def fadeTextIn(self, step):
+    def playRestOfSound(self, step):
         if DEBUG:
-            print("    Fading in text")
-        old_surf = pygame.surface.Surface((800,600))
-        old_surf.blit(self.game_window, (0,0))
-        delta = round(step["time"] / 256)
-        font = self.fonts[step["font"]]
-        text_surf = font.render(self.cs["text"][step["text"]], True, tuple(step["color"]))
-        pos = self.centerSurfaceAt(text_surf, step["pos"])
-        for alpha in range(0, 256):
-            text_surf.set_alpha(alpha)
-            self.game_window.blit(old_surf, (0,0))
-            self.game_window.blit(text_surf, pos)
-            pygame.display.update()
-            pygame.time.delay(delta)
-        if DEBUG:
-            print("    Done fading in text")
-        return False
-    
-    def delay(self, step):
-        if DEBUG:
-            print("    Starting delay.")
-        for i in range(0, step["time"]):
+            print("    Playing the rest of sound")
+        chn = pygame.mixer.Channel(step["channel"])
+        while chn.get_busy():
             if self.wannaSkip():
                 return True
-            pygame.time.delay(1)
-        if DEBUG: 
-            print("    Finished delay")
+        if DEBUG:
+            print("    Done playing the rest sound")
         return False
-    
-    def displayCenterImage(self, step):
-        if DEBUG:
-            print("    Displaying image " + step["img"])
-        img = self.images[step["img"]]
-        pos = self.centerSurfaceAt(img, step["pos"])
-        self.game_window.blit(img,pos)
-        pygame.display.update()
-        if DEBUG:
-            print("    Finish displaying image " + step["img"])
-        return self.wannaSkip()
     
     def playSound(self, step):
         if DEBUG:
@@ -196,4 +319,30 @@ class Cutscene():
             self.drawOrder = []
         if DEBUG:
             print("    Finish clear screen")
+        return self.wannaSkip()
+    
+    def resizeImage(self, step):
+        if DEBUG:
+            print("    Starting to resize image")
+        img = self.images[step["img"]]
+        img = pygame.transform.scale(img, step["size"])
+        self.images[step["img"]] = img
+        if DEBUG:
+            print("    Finished resizing image")
+        return self.wannaSkip()
+    
+    def saveScreen(self, step):
+        if DEBUG:
+            print("    Starting save screen")
+        self.saved_screen.blit(self.game_window,(0,0))
+        if DEBUG:
+            print("    Finished save screen")
+        return self.wannaSkip()
+    
+    def restoreScreen(self, step):
+        if DEBUG:
+            print("    Starting restore screen")
+        self.game_window.blit(self.saved_screen,(0,0))
+        if DEBUG:
+            print("    Finished restore screen")
         return self.wannaSkip()

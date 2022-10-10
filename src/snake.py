@@ -17,6 +17,9 @@ class Snake:
         self.deaths = []
         self.deaths.append(pygame.mixer.Sound('../audio/death/TinyAccidentDeath.ogg'))
         self.deaths.append(pygame.mixer.Sound('../audio/death/TylerDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound('../audio/death/TomDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound('../audio/death/YesiDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound('../audio/death/SaltDeath.ogg'))
         self.move_queue = []
 
     def getBody(self):
@@ -88,8 +91,8 @@ class Snake:
         ch1.play(self.cry)
         ch2.play(random.choice(self.deaths))
         while ch1.get_busy() or ch2.get_busy():
-            if DEBUG:
-                print("ch1 is " + str(ch1.get_busy()) + " ch2 is " + str(ch2.get_busy()))
+            pass
+        print("Dontcrash") #Why do I need this to not crash
         pygame.mixer.music.unpause()
         if DEBUG:
             print("Done Dying")
