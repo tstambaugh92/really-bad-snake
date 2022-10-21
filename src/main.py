@@ -110,7 +110,7 @@ def main():
     pygame.mixer.music.play(loops=-1)
     
     #create window and boot title screen
-    game_window = pygame.display.set_mode((800, 600))
+    game_window = pygame.display.set_mode((800, 600), vsync=1)
     playButtonPos = (200,400)
     quitButtonPos = (430,400)
     creditsButtonPos = (430,520)

@@ -2,7 +2,11 @@
     "name" : "credits sequence",
     "images" : {
         "logo" : "LOGO.png",
-        "tiny" : "Credits/TinyAccident.JPG"      
+        "tiny" : "Credits/TinyAccident.JPG",
+        "salty" : "Credits/Salty.jpg",
+        "HMs" : "Credits/Tom.jpg",
+        "KHt" : "Credits/Tyler.jpg",
+        "ystm" : "Credits/Yesi.jpg"  
     },
     "music" : {
         "shanty" : "shanty.ogg"
@@ -99,17 +103,517 @@
         "8" : {
             "type" : "newCanvas",
             "data" : {
-                "size" : [200, 100]
+                "size" : [550, 100],
+                "color" : [0,0,0]
             }
         },
         "9" : {
-
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "tiny",
+                "font" : "big",
+                "pos" : [250,35],
+                "color" : [255,0,0]
+            }
         },
-        "8" : {
+        "10" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "as",
+                "font" : "small",
+                "pos" : [250,65],
+                "color" : [255,0,0]
+            }
+        },
+        "11" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "star",
+                "font" : "small",
+                "pos" : [250,90],
+                "color" : [255,0,0]
+            }
+        },
+        "12" : {
+            "type" : "resizeImage", 
+            "data" : {
+                "img" : "tiny",
+                "size": [150,200]
+            }
+        },
+        "13" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "img" : "tiny",
+                "time" : 1500,
+                "pos" : [130, 360]
+            }
+        }, 
+        "14" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [600, 360]
+            }
+        },
+        "15" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 2000
+            }
+        },
+        "16" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [800, 370],
+                "color" : [0,0,0]
+            }
+        },
+        "17" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [400,365]
+            }
+        },
+
+        "18" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 500
+            }
+        },
+        "19" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [400, 100],
+                "color" : [0,0,0]
+            }
+        },
+        "20" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "clpz",
+                "font" : "big",
+                "pos" : [200,35],
+                "color" : [255,0,0]
+            }
+        },
+        "21" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "as",
+                "font" : "small",
+                "pos" : [200,65],
+                "color" : [255,0,0]
+            }
+        },
+        "22" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "star",
+                "font" : "small",
+                "pos" : [200,90],
+                "color" : [255,0,0]
+            }
+        },
+        "23" : {
+            "type" : "resizeImage", 
+            "data" : {
+                "img" : "salty",
+                "size": [200,200]
+            }
+        },
+        "24" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "img" : "salty",
+                "time" : 1500,
+                "pos" : [590, 360]
+            }
+        }, 
+        "25" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [230, 360]
+            }
+        },
+        "26" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 2000
+            }
+        },
+        "27" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [800, 400],
+                "color" : [0,0,0]
+            }
+        },
+        "28" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [400,400]
+            }
+        },
+
+        "29" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 500
+            }
+        },
+        "30" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [650, 100],
+                "color" : [0,0,0]
+            }
+        },
+        "31" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "HMs",
+                "font" : "big",
+                "pos" : [325,35],
+                "color" : [255,0,0]
+            }
+        },
+        "32" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "as",
+                "font" : "small",
+                "pos" : [325,65],
+                "color" : [255,0,0]
+            }
+        },
+        "33" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "star",
+                "font" : "small",
+                "pos" : [325,90],
+                "color" : [255,0,0]
+            }
+        },
+        "34" : {
+            "type" : "resizeImage", 
+            "data" : {
+                "img" : "HMs",
+                "size": [150,250]
+            }
+        },
+        "35" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "img" : "HMs",
+                "time" : 1500,
+                "pos" : [120, 300]
+            }
+        }, 
+        "36" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [450, 520]
+            }
+        },
+        "37" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 2000
+            }
+        },
+        "38" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [800, 400],
+                "color" : [0,0,0]
+            }
+        },
+        "39" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [400,400]
+            }
+        },
+
+        "40" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 500
+            }
+        },
+        "41" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [650, 100],
+                "color" : [0,0,0]
+            }
+        },
+        "42" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "ystm",
+                "font" : "big",
+                "pos" : [325,35],
+                "color" : [255,0,0]
+            }
+        },
+        "43" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "as",
+                "font" : "small",
+                "pos" : [325,65],
+                "color" : [255,0,0]
+            }
+        },
+        "44" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "star",
+                "font" : "small",
+                "pos" : [325,90],
+                "color" : [255,0,0]
+            }
+        },
+        "45" : {
+            "type" : "resizeImage", 
+            "data" : {
+                "img" : "ystm",
+                "size": [200,200]
+            }
+        },
+        "46" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "img" : "ystm",
+                "time" : 1500,
+                "pos" : [590, 490]
+            }
+        }, 
+        "47" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [335, 350]
+            }
+        },
+        "48" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 2000
+            }
+        },
+        "49" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [800, 400],
+                "color" : [0,0,0]
+            }
+        },
+        "50" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [400,400]
+            }
+        },
+
+        "51" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 500
+            }
+        },
+        "52" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [600, 100],
+                "color" : [0,0,0]
+            }
+        },
+        "53" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "KHt",
+                "font" : "big",
+                "pos" : [300,35],
+                "color" : [255,0,0]
+            }
+        },
+        "54" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "as",
+                "font" : "small",
+                "pos" : [300,65],
+                "color" : [255,0,0]
+            }
+        },
+        "55" : {
+            "type" : "textOnCanvas",
+            "data" : {
+                "text" : "star",
+                "font" : "small",
+                "pos" : [300,90],
+                "color" : [255,0,0]
+            }
+        },
+        "56" : {
+            "type" : "resizeImage", 
+            "data" : {
+                "img" : "KHt",
+                "size": [200,200]
+            }
+        },
+        "57" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "img" : "KHt",
+                "time" : 1500,
+                "pos" : [400, 300]
+            }
+        }, 
+        "58" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [400, 490]
+            }
+        },
+        "59" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 2000
+            }
+        },
+        "60" : {
+            "type" : "newCanvas",
+            "data" : {
+                "size" : [800, 400],
+                "color" : [0,0,0]
+            }
+        },
+        "61" : {
+            "type" : "fadeCanvasIn",
+            "data" : {
+                "time" : 1500,
+                "pos" : [400,400]
+            }
+        },
+
+        "62" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 1500
+            }
+        },
+        "63" : {
+            "type" : "fadeTextIn",
+            "data" : {
+                "color" : [255,0,0],
+                "font" : "big",
+                "text" : "special",
+                "time" : 1000,
+                "save" : true,
+                "pos" : [400,250]
+            }
+        },
+        "64" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 1000
+            }
+        },
+        "65" : {
+            "type" : "fadeTextIn",
+            "data" : {
+                "color" : [255,0,0],
+                "font" : "big",
+                "text" : "toYou",
+                "time" : 1000,
+                "save" : true,
+                "pos" : [400,350]
+            }
+        },
+        "66" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 1000
+            }
+        },
+        "67" : {
+            "type" : "fadeTextIn",
+            "data" : {
+                "color" : [255,0,0],
+                "font" : "big",
+                "text" : "fwc",
+                "time" : 1000,
+                "save" : true,
+                "pos" : [400,450]
+            }
+        },
+        "68" : {
+            "type" : "resizeImage",
+            "data" : {
+                "img" : "logo",
+                "size" : [400,100]
+            }
+        },
+        "69" : {
+            "type" : "fadeCenterImageIn",
+            "data" : {
+                "img" : "logo",
+                "pos" : [400,540],
+                "time" : 1500
+            }
+        },
+        "70" : {
+            "type" : "delay",
+            "data" : {
+                "time" : 20000
+            }
+        },
+        "71" : {
+            "type" : "playSound",
+            "data" : {
+                "sound" : "FlyWithChrist",
+                "channel" : 1   
+            }
+        },
+
+        "72" : {
             "type" : "playRestOfMusic",
             "data" : {
                 "channel" : 0
             }
+        },
+        "73" : {
+            "type" : "playRestOfMusic",
+            "data" : {
+                "channel" : 1
+            }
+        },
+        "74" : {
+            "type" : "playSound",
+            "data" : {
+                "sound" : "tyler",
+                "channel" : 1   
+            }
+        },
+        "75" : {
+            "type" : "playRestOfMusic",
+            "data" : {
+                "channel" : 1
+            }
         }
+        
     }
 }
