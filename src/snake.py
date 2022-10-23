@@ -7,6 +7,7 @@ from config import *
 class Snake:
     def __init__(self):
         self.body = [[0,0]]
+        self.body_direction = ['E']
         self.direction = 'E'
         self.is_dead = False
         self.move_delay = START_SPEED
@@ -21,9 +22,46 @@ class Snake:
         self.deaths.append(pygame.mixer.Sound('../audio/death/YesiDeath.ogg'))
         self.deaths.append(pygame.mixer.Sound('../audio/death/SaltDeath.ogg'))
         self.move_queue = []
+        self.img = {}
+        self.loadBodyImages()
 
     def getBody(self):
         return self.body
+    
+    def getBodyImages(self):
+        images = []
+        last = len(self.body_direction) - 1
+        for index in range(0,len(self.body_direction)):
+            str = ""
+            if index == 0: #head
+                str = "head" + self.body_direction[index]
+            elif index == last: #tail
+                if self.body_direction[index] == self.body_direction[index-1]:
+                    str = "tail" + self.body_direction[index]
+                else:
+                    str = "tail" + self.body_direction[index-1]
+            else:  #body
+                str = "bodyV"
+                if self.body_direction[index - 1] == self.body_direction[index]:
+                    if self.body_direction[index] in ['N','S']:
+                        str = "bodyV"
+                    else:
+                        str = "bodyH"
+                else:
+                    if ((self.body_direction[index] == 'W' and self.body_direction[index-1] == 'N')
+                    or  (self.body_direction[index] == 'S' and self.body_direction[index-1] == 'E')):
+                        str = "cornerNE"
+                    elif ((self.body_direction[index] == 'E' and self.body_direction[index-1] == 'N')
+                    or    (self.body_direction[index] == 'S' and self.body_direction[index-1] == 'W')):
+                        str = "cornerNW"
+                    elif ((self.body_direction[index] == 'N' and self.body_direction[index-1] == 'E')
+                    or    (self.body_direction[index] == 'W' and self.body_direction[index-1] == 'S')):
+                        str = "cornerSE"
+                    elif ((self.body_direction[index] == 'E' and self.body_direction[index-1] == 'S')
+                    or    (self.body_direction[index] == 'N' and self.body_direction[index-1] == 'W')):
+                        str = "cornerSW"
+            images.append(self.img[str])
+        return zip(images, self.body)
     
     def getHead(self):
         return self.body[0]
@@ -60,7 +98,7 @@ class Snake:
                 self.die()
             else:
                 self.body.insert(0,new_pos)
-
+                self.body_direction.insert(0,self.direction)
                 
             #expand if an apple was eaten
             if self.eaten:
@@ -71,6 +109,7 @@ class Snake:
                     self.max_move_delay -=1
             else:
                 self.body.pop()
+                self.body_direction.pop()
                 
             #reset move delay
             self.move_delay = self.max_move_delay
@@ -105,4 +144,25 @@ class Snake:
         self.move_queue.append(move)
         if DEBUG:
             print("Queued move " + move)
+        return
+    
+    def loadBodyImages(self):
+        #head
+        self.img["headN"] = pygame.image.load("../img/snake/headN.png")
+        self.img["headS"] = pygame.image.load("../img/snake/headS.png")
+        self.img["headE"] = pygame.image.load("../img/snake/headE.png")
+        self.img["headW"] = pygame.image.load("../img/snake/headW.png")
+        #tail
+        self.img["tailN"] = pygame.image.load("../img/snake/tailN.png")
+        self.img["tailS"] = pygame.image.load("../img/snake/tailS.png")
+        self.img["tailE"] = pygame.image.load("../img/snake/tailE.png")
+        self.img["tailW"] = pygame.image.load("../img/snake/tailW.png")
+        #body
+        self.img["bodyV"] = pygame.image.load("../img/snake/bodyV.png")
+        self.img["bodyH"] = pygame.image.load("../img/snake/bodyH.png")
+        #corners
+        self.img["cornerNW"] = pygame.image.load("../img/snake/cornerNW.png")
+        self.img["cornerNE"] = pygame.image.load("../img/snake/cornerNE.png")
+        self.img["cornerSW"] = pygame.image.load("../img/snake/cornerSW.png")
+        self.img["cornerSE"] = pygame.image.load("../img/snake/cornerSE.png")
         return

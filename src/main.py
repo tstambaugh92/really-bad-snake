@@ -1,6 +1,7 @@
 #Thomas Stambaugh
 #Really Bad Snake
 from imp import reload
+from json import load
 import pygame
 import random
 from config import *
@@ -62,9 +63,10 @@ def playGame(game_window):
         #graphics
         if game_is_running:
             game_window.blit(blank_board, (0, 0))
-            for tile in snake.getBody():
-                game_window.blit(snake_piece, (tile[0] * BODY_SIZE, tile[1] * BODY_SIZE))
-            game_window.blit(apple_piece, (apple.getX() * BODY_SIZE, apple.getY() * BODY_SIZE))
+            for body, pos in snake.getBodyImages():
+                #game_window.blit(snake_piece, (tile[0] * BODY_SIZE, tile[1] * BODY_SIZE))
+                game_window.blit(body, (pos[0] * BODY_SIZE, pos[1] * BODY_SIZE))
+            game_window.blit(apple.getImg(), (apple.getX() * BODY_SIZE, apple.getY() * BODY_SIZE))
             pygame.display.update()
         
         #wait
@@ -86,7 +88,50 @@ def credits(game_window):
     credit_cs = Cutscene("../cutscene/credits.json", game_window)
     credit_cs.play()
     return
-    
+
+def setDifficulty(setting):
+    if DEBUG:
+        print("Still working on difficulty")
+    return
+
+def loadSettings():
+    global GORE
+    global FULL_SCREEN
+    global SOUND
+    with open("../misc/config.ini", "r") as config_file:
+        for line in config_file:
+            line_str = line.replace(" ", "")
+            line_str = line_str.replace("\n", "")
+            if DEBUG:
+                print("line:" + line_str)
+            index = line_str.find("=")
+            if line_str[0:index] == "difficulty":
+                setDifficulty(line_str[index+1:])
+            elif line_str[0:index] == "gore":
+                print("Herp derp: " + line_str[index+1:] + "#")
+                if line_str[index+1:] == "True":
+                    GORE = True
+                    print("Herp")
+                else:
+                    GORE = False
+                    print("Derp")
+            elif line_str[0:index] == "sound":
+                if line_str[index+1:] == "True":
+                    SOUND = True
+                else:
+                    SOUND = False
+            elif line_str[0:index] == "fullscreen":
+                if line_str[index+1:] == "True":
+                    FULL_SCREEN = True
+                else:
+                    FULL_SCREEN = False     
+        config_file.close()
+        if DEBUG:
+            print("Sound is " + str(SOUND))
+            print("Gore is " + str(GORE))
+            print("Full Screen is " + str(FULL_SCREEN))
+            print("Loaded configuration file")
+    return
 
 def main():
     random.seed()
@@ -94,6 +139,7 @@ def main():
     pygame.mixer.init()
     pygame.font.init()
     pygame.display.set_caption('Very Bad Snake')
+    loadSettings()
     
     #load images
     titlePic = pygame.image.load('../img/title.png')
@@ -110,7 +156,11 @@ def main():
     pygame.mixer.music.play(loops=-1)
     
     #create window and boot title screen
-    game_window = pygame.display.set_mode((800, 600), vsync=1)
+    if FULL_SCREEN:
+        fs_option = pygame.FULLSCREEN
+    else:
+        fs_option = 0
+    game_window = pygame.display.set_mode((800, 600), vsync=1, flags=fs_option)
     playButtonPos = (200,400)
     quitButtonPos = (430,400)
     creditsButtonPos = (430,520)
@@ -124,7 +174,8 @@ def main():
                 mousePos = pygame.mouse.get_pos()
                 if playButton.wasItClicked(mousePos):
                     quit = playGame(game_window)
-                    titleScreen = deathPic
+                    if GORE:
+                        titleScreen = deathPic
                     reload_title = True
                 if quitButton.wasItClicked(mousePos):
                     quit = True
@@ -137,7 +188,8 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     quit = playGame(game_window)
-                    titleScreen = deathPic
+                    if GORE:
+                        titleScreen = deathPic
                     reload_title = True
             #Windows exit button
             elif event.type == pygame.QUIT:
