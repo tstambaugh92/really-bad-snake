@@ -4,13 +4,15 @@ from imp import reload
 from json import load
 import pygame
 import random
-from config import *
+import os
 
+import config
 from snake import Snake
 from apple import Apple
 from button import Button
 from cutscene import Cutscene
 
+thisFile = ""
 
 def playGame(game_window):
     snake = Snake()
@@ -18,10 +20,10 @@ def playGame(game_window):
     blank_board = pygame.Surface((800, 600))
     blank_board.fill(pygame.Color('#000000'))
     
-    snake_piece = pygame.Surface((BODY_SIZE,BODY_SIZE))
+    snake_piece = pygame.Surface((config.BODY_SIZE,config.BODY_SIZE))
     snake_piece.fill(pygame.Color('#FF0000'))
     
-    apple_piece = pygame.Surface((BODY_SIZE,BODY_SIZE))
+    apple_piece = pygame.Surface((config.BODY_SIZE,config.BODY_SIZE))
     apple_piece.fill(pygame.Color('#FFFF00'))
     
     score = 0
@@ -45,13 +47,13 @@ def playGame(game_window):
                 elif event.key == pygame.K_d:
                     direction = 'E'
                 snake.addMove(direction)
-                if DEBUG:
+                if config.DEBUG:
                     print("Direction switched: " + direction)
 
         #game logic
         snake.move()
         if snake.isHeDead() == True:
-            if DEBUG:
+            if config.DEBUG:
                 print("The Snake is dead")
             game_is_running = False
         elif snake.getHead() == apple.getPos():
@@ -64,45 +66,41 @@ def playGame(game_window):
         if game_is_running:
             game_window.blit(blank_board, (0, 0))
             for body, pos in snake.getBodyImages():
-                #game_window.blit(snake_piece, (tile[0] * BODY_SIZE, tile[1] * BODY_SIZE))
-                game_window.blit(body, (pos[0] * BODY_SIZE, pos[1] * BODY_SIZE))
-            game_window.blit(apple.getImg(), (apple.getX() * BODY_SIZE, apple.getY() * BODY_SIZE))
+                game_window.blit(body, (pos[0] * config.BODY_SIZE, pos[1] * config.BODY_SIZE))
+            game_window.blit(apple.getImg(), (apple.getX() * config.BODY_SIZE, apple.getY() * config.BODY_SIZE))
             pygame.display.update()
         
         #wait
         pygame.time.wait(int(1000/60)) #1/60th of a second, or '60fps'
         
     pygame.event.clear 
-    if DEBUG:
+    if config.DEBUG:
         print("Ending playGame()")
     return quit
     
 def exitScreen(game_window):
     #load files
     pygame.mixer.music.stop()
-    exit_cs = Cutscene("../cutscene/exit.json", game_window)
+    exit_cs = Cutscene(config.BASEDIR + "/cutscene/exit.json", game_window)
     exit_cs.play()
     return
 
 def credits(game_window):
-    credit_cs = Cutscene("../cutscene/credits.json", game_window)
+    credit_cs = Cutscene(config.BASEDIR + "/cutscene/credits.json", game_window)
     credit_cs.play()
     return
 
 def setDifficulty(setting):
-    if DEBUG:
+    if config.DEBUG:
         print("Still working on difficulty")
     return
 
 def loadSettings():
-    global GORE
-    global FULL_SCREEN
-    global SOUND
-    with open("../misc/config.ini", "r") as config_file:
+    with open(config.BASEDIR + "/misc/config.ini", "r") as config_file:
         for line in config_file:
             line_str = line.replace(" ", "")
             line_str = line_str.replace("\n", "")
-            if DEBUG:
+            if config.DEBUG:
                 print("line:" + line_str)
             index = line_str.find("=")
             if line_str[0:index] == "difficulty":
@@ -110,30 +108,32 @@ def loadSettings():
             elif line_str[0:index] == "gore":
                 print("Herp derp: " + line_str[index+1:] + "#")
                 if line_str[index+1:] == "True":
-                    GORE = True
+                    config.GORE = True
                     print("Herp")
                 else:
-                    GORE = False
+                    config.GORE = False
                     print("Derp")
             elif line_str[0:index] == "sound":
                 if line_str[index+1:] == "True":
-                    SOUND = True
+                    config.SOUND = True
                 else:
-                    SOUND = False
+                    config.SOUND = False
             elif line_str[0:index] == "fullscreen":
                 if line_str[index+1:] == "True":
-                    FULL_SCREEN = True
+                    config.FULL_SCREEN = True
                 else:
-                    FULL_SCREEN = False     
+                    config.FULL_SCREEN = False     
         config_file.close()
-        if DEBUG:
-            print("Sound is " + str(SOUND))
-            print("Gore is " + str(GORE))
-            print("Full Screen is " + str(FULL_SCREEN))
+        if config.DEBUG:
+            print("Sound is " + str(config.SOUND))
+            print("Gore is " + str(config.GORE))
+            print("Full Screen is " + str(config.FULL_SCREEN))
             print("Loaded configuration file")
     return
 
 def main():
+    config.BASEDIR = os.path.join( os.path.dirname( __file__ ), '..' )
+    print(config.BASEDIR)
     random.seed()
     pygame.init()
     pygame.mixer.init()
@@ -142,21 +142,21 @@ def main():
     loadSettings()
     
     #load images
-    titlePic = pygame.image.load('../img/title.png')
-    deathPic = pygame.image.load('../img/title2.png')
-    playButton = Button('../img/play.png', (200,100))
-    quitButton = Button('../img/quit.png', (200,100))
-    creditsButton = Button('../img/credits.png', (200,50))
-    icon = pygame.image.load('../img/icon.png')
+    titlePic = pygame.image.load(config.BASEDIR + '/img/title.png')
+    deathPic = pygame.image.load(config.BASEDIR + '/img/title2.png')
+    playButton = Button(config.BASEDIR + '/img/play.png', (200,100))
+    quitButton = Button(config.BASEDIR + '/img/quit.png', (200,100))
+    creditsButton = Button(config.BASEDIR + '/img/credits.png', (200,50))
+    icon = pygame.image.load(config.BASEDIR + '/img/icon.png')
     icon = pygame.transform.scale(icon,(32,32))
     pygame.display.set_icon(icon)
     
     #load music
-    pygame.mixer.music.load('../audio/midsummers.ogg')
+    pygame.mixer.music.load(config.BASEDIR + '/audio/midsummers.ogg')
     pygame.mixer.music.play(loops=-1)
     
     #create window and boot title screen
-    if FULL_SCREEN:
+    if config.FULL_SCREEN:
         fs_option = pygame.FULLSCREEN
     else:
         fs_option = 0
@@ -174,7 +174,7 @@ def main():
                 mousePos = pygame.mouse.get_pos()
                 if playButton.wasItClicked(mousePos):
                     quit = playGame(game_window)
-                    if GORE:
+                    if config.GORE:
                         titleScreen = deathPic
                     reload_title = True
                 if quitButton.wasItClicked(mousePos):
@@ -188,7 +188,7 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     quit = playGame(game_window)
-                    if GORE:
+                    if config.GORE:
                         titleScreen = deathPic
                     reload_title = True
             #Windows exit button

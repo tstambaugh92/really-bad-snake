@@ -1,12 +1,12 @@
 #Apple class
 #For Very Bad Snake
 import pygame
-from config import *
+import config
 import random
 class Apple:
     def __init__(self):
         self.position = [10,10]
-        self.img = pygame.image.load("../img/apple.png")
+        self.img = pygame.image.load(config.BASEDIR + "/img/apple.png")
         
     def getX(self):
         return self.position[0]
@@ -21,8 +21,8 @@ class Apple:
         return self.img
         
     def regrow(self, snake_body):
-        new_pos = [random.randint(0,BOARD_WIDTH - 1),random.randint(0,BOARD_HEIGHT - 1)]
+        new_pos = [random.randint(0,config.BOARD_WIDTH - 1),random.randint(0,config.BOARD_HEIGHT - 1)]
         while new_pos in snake_body:
-            new_pos = [random.randint(0,BOARD_WIDTH - 1),random.randint(0,BOARD_HEIGHT - 1)]
+            new_pos = [random.randint(0,config.BOARD_WIDTH - 1),random.randint(0,config.BOARD_HEIGHT - 1)]
         self.position = new_pos
         return

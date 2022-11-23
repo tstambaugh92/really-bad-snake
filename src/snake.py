@@ -2,25 +2,26 @@
 #For Very Bad Snake
 import pygame
 import random
-from config import *
+import config
 
 class Snake:
     def __init__(self):
+        print(config.BASEDIR + " lalala")
         self.body = [[0,0]]
         self.body_direction = ['E']
         self.direction = 'E'
         self.is_dead = False
-        self.move_delay = START_SPEED
-        self.max_move_delay = START_SPEED
+        self.move_delay = config.START_SPEED
+        self.max_move_delay = config.START_SPEED
         self.eaten = False
-        self.cry = pygame.mixer.Sound('../audio/cry.ogg')
-        self.gulp = pygame.mixer.Sound('../audio/gulp.ogg')
+        self.cry = pygame.mixer.Sound(config.BASEDIR + '/audio/cry.ogg')
+        self.gulp = pygame.mixer.Sound(config.BASEDIR + '/audio/gulp.ogg')
         self.deaths = []
-        self.deaths.append(pygame.mixer.Sound('../audio/death/TinyAccidentDeath.ogg'))
-        self.deaths.append(pygame.mixer.Sound('../audio/death/TylerDeath.ogg'))
-        self.deaths.append(pygame.mixer.Sound('../audio/death/TomDeath.ogg'))
-        self.deaths.append(pygame.mixer.Sound('../audio/death/YesiDeath.ogg'))
-        self.deaths.append(pygame.mixer.Sound('../audio/death/SaltDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound(config.BASEDIR + '/audio/death/TinyAccidentDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound(config.BASEDIR + '/audio/death/TylerDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound(config.BASEDIR + '/audio/death/TomDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound(config.BASEDIR + '/audio/death/YesiDeath.ogg'))
+        self.deaths.append(pygame.mixer.Sound(config.BASEDIR + '/audio/death/SaltDeath.ogg'))
         self.move_queue = []
         self.img = {}
         self.loadBodyImages()
@@ -92,7 +93,7 @@ class Snake:
                 new_pos[1] = new_pos[1] - 1
             
             #collision detection with walls and self
-            if new_pos[0] in [-1,BOARD_WIDTH] or new_pos[1] in [-1,BOARD_HEIGHT]:
+            if new_pos[0] in [-1,config.BOARD_WIDTH] or new_pos[1] in [-1,config.BOARD_HEIGHT]:
                 self.die()
             elif new_pos in self.getBody():
                 self.die()
@@ -103,9 +104,9 @@ class Snake:
             #expand if an apple was eaten
             if self.eaten:
                 self.eaten = False
-                if ((len(self.getBody()) - 1) % SCORE_SPEEDUP == 0 
+                if ((len(self.getBody()) - 1) % config.SCORE_SPEEDUP == 0 
                     and self.max_move_delay > 1):
-                    #Speed up every SCORE_SPEEDUP points
+                    #Speed up every config.SCORE_SPEEDUP points
                     self.max_move_delay -=1
             else:
                 self.body.pop()
@@ -121,7 +122,7 @@ class Snake:
         return
     
     def die(self):
-        if DEBUG:
+        if config.DEBUG:
             print("Dying")
         self.is_dead = True
         pygame.mixer.music.pause()
@@ -133,7 +134,7 @@ class Snake:
             pass
         print("Dontcrash") #Why do I need this to not crash
         pygame.mixer.music.unpause()
-        if DEBUG:
+        if config.DEBUG:
             print("Done Dying")
         return
         
@@ -142,27 +143,27 @@ class Snake:
     
     def addMove(self,move):
         self.move_queue.append(move)
-        if DEBUG:
+        if config.DEBUG:
             print("Queued move " + move)
         return
     
     def loadBodyImages(self):
         #head
-        self.img["headN"] = pygame.image.load("../img/snake/headN.png")
-        self.img["headS"] = pygame.image.load("../img/snake/headS.png")
-        self.img["headE"] = pygame.image.load("../img/snake/headE.png")
-        self.img["headW"] = pygame.image.load("../img/snake/headW.png")
+        self.img["headN"] = pygame.image.load(config.BASEDIR + "/img/snake/headN.png")
+        self.img["headS"] = pygame.image.load(config.BASEDIR + "/img/snake/headS.png")
+        self.img["headE"] = pygame.image.load(config.BASEDIR + "/img/snake/headE.png")
+        self.img["headW"] = pygame.image.load(config.BASEDIR + "/img/snake/headW.png")
         #tail
-        self.img["tailN"] = pygame.image.load("../img/snake/tailN.png")
-        self.img["tailS"] = pygame.image.load("../img/snake/tailS.png")
-        self.img["tailE"] = pygame.image.load("../img/snake/tailE.png")
-        self.img["tailW"] = pygame.image.load("../img/snake/tailW.png")
+        self.img["tailN"] = pygame.image.load(config.BASEDIR + "/img/snake/tailN.png")
+        self.img["tailS"] = pygame.image.load(config.BASEDIR + "/img/snake/tailS.png")
+        self.img["tailE"] = pygame.image.load(config.BASEDIR + "/img/snake/tailE.png")
+        self.img["tailW"] = pygame.image.load(config.BASEDIR + "/img/snake/tailW.png")
         #body
-        self.img["bodyV"] = pygame.image.load("../img/snake/bodyV.png")
-        self.img["bodyH"] = pygame.image.load("../img/snake/bodyH.png")
+        self.img["bodyV"] = pygame.image.load(config.BASEDIR + "/img/snake/bodyV.png")
+        self.img["bodyH"] = pygame.image.load(config.BASEDIR + "/img/snake/bodyH.png")
         #corners
-        self.img["cornerNW"] = pygame.image.load("../img/snake/cornerNW.png")
-        self.img["cornerNE"] = pygame.image.load("../img/snake/cornerNE.png")
-        self.img["cornerSW"] = pygame.image.load("../img/snake/cornerSW.png")
-        self.img["cornerSE"] = pygame.image.load("../img/snake/cornerSE.png")
+        self.img["cornerNW"] = pygame.image.load(config.BASEDIR + "/img/snake/cornerNW.png")
+        self.img["cornerNE"] = pygame.image.load(config.BASEDIR + "/img/snake/cornerNE.png")
+        self.img["cornerSW"] = pygame.image.load(config.BASEDIR + "/img/snake/cornerSW.png")
+        self.img["cornerSE"] = pygame.image.load(config.BASEDIR + "/img/snake/cornerSE.png")
         return

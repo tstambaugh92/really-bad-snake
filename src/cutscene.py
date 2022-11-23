@@ -6,7 +6,7 @@
 #so that I can reuse the same logical code to process that file
 #This is overkill for snake, but will be useful in the future
 
-from config import *
+import config
 import json
 import pygame
 
@@ -30,7 +30,7 @@ class Cutscene():
 #
 #TO DO: Add ability to keep multiple saved_screens and cavases
     def __init__(self, cs_file_str, game_window):
-        if DEBUG:
+        if config.DEBUG:
             print("Loading " + cs_file_str)
         with open(cs_file_str, "r") as cs_file:
             self.cs = json.load(cs_file)
@@ -44,62 +44,62 @@ class Cutscene():
         self.loadFonts(self.cs["fonts"])
         self.loadSound(self.cs["sounds"])
         self.loadMusic(self.cs["music"])
-        if DEBUG:
+        if config.DEBUG:
             print(cs_file_str + " loaded")
         return
     
     ##Loading assets section
     def loadImage(self, image_list):
-        if DEBUG:
+        if config.DEBUG:
             print("Loading images")
         self.images = {}
         for img in image_list:
-            self.images[img] = pygame.image.load("../img/" + image_list[img]).convert()
-        if DEBUG:
+            self.images[img] = pygame.image.load(config.BASEDIR + "/img/" + image_list[img]).convert()
+        if config.DEBUG:
             print("Finished loading images")
         return
     
     def loadMusic(self, music_list):
-        if DEBUG:
+        if config.DEBUG:
             print("Loading music")
         self.music = {}
         for curr_song in music_list:
             song = music_list[curr_song]
-            self.music[curr_song] = pygame.mixer.Sound("../audio/" + song)
-        if DEBUG:
+            self.music[curr_song] = pygame.mixer.Sound(config.BASEDIR + "/audio/" + song)
+        if config.DEBUG:
             print("Finished loading music")
         return
     
     def loadFonts(self, font_list):
-        if DEBUG:
+        if config.DEBUG:
             print("Loading fonts")
         self.fonts = {}
         for curr_font in font_list:
             font = font_list[curr_font]
-            self.fonts[curr_font] = pygame.font.Font('../misc/' + font["file"],font["size"])
-        if DEBUG:
+            self.fonts[curr_font] = pygame.font.Font(config.BASEDIR + '/misc/' + font["file"],font["size"])
+        if config.DEBUG:
             print("Finished loading fonts")
         return
     
     def loadSound(self, sound_list):
-        if DEBUG:
+        if config.DEBUG:
             print("Loading sounds")
         self.sounds = {}
         for curr_sound in sound_list:
             sound = sound_list[curr_sound]
-            self.sounds[curr_sound] = pygame.mixer.Sound("../audio/" + sound)
-        if DEBUG:
+            self.sounds[curr_sound] = pygame.mixer.Sound(config.BASEDIR + "/audio/" + sound)
+        if config.DEBUG:
             print("Finished loading sound")
         return
     
     #Run through all the steps and play them
     def play(self):
-        if DEBUG:
+        if config.DEBUG:
             print("Playing " + self.cs["name"])
         skip = False
         pygame.mixer.stop()
         for step_num in range(1, len(self.cs["steps"]) + 1):
-            if DEBUG:
+            if config.DEBUG:
                 print("  Playing step " + str(step_num))
             step = self.cs["steps"][str(step_num)]
             step_type = step["type"]
@@ -137,7 +137,7 @@ class Cutscene():
                 break
         
         pygame.mixer.stop()
-        if DEBUG:
+        if config.DEBUG:
             print("Done playing cutscene " + self.cs["name"])
             print(" ")
         return
@@ -167,13 +167,13 @@ class Cutscene():
         #key - data type - desc
         #color - #RRGGBB string - The color of the blank screen
         #save - bool - if the board is redrawn, should it be blank
-        if DEBUG:
+        if config.DEBUG:
             print("    Start clear screen")
         self.game_window.fill(step["color"])
         pygame.display.update()
         if step["save"]:
             self.drawOrder = []
-        if DEBUG:
+        if config.DEBUG:
             print("    Finish clear screen")
         return self.wannaSkip()
 
@@ -183,13 +183,13 @@ class Cutscene():
         #STEP keys:
         #key - data type - desc
         #time - int - milisections to delay
-        if DEBUG:
+        if config.DEBUG:
             print("    Starting delay.")
         for i in range(0, step["time"]):
             if self.wannaSkip():
                 return True
             pygame.time.delay(1)
-        if DEBUG: 
+        if config.DEBUG: 
             print("    Finished delay")
         return False
     
@@ -201,18 +201,18 @@ class Cutscene():
         #img - img nickname - The key for the image in self.images
         #pos - [int, int] - Location for the center of the image
         #save - bool - If the board is redrawn from scratch, should this be included
-        if DEBUG:
+        if config.DEBUG:
             print("    Displaying image " + step["img"])
         img = self.images[step["img"]]
         pos = self.centerSurfaceAt(img, step["pos"])
         self.game_window.blit(img,pos)
         pygame.display.update()
-        if DEBUG:
+        if config.DEBUG:
             print("    Finish displaying image " + step["img"])
         return self.wannaSkip()
     
     def fadeCanvasIn(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Starting to fade in canvas")
         canvas = self.canvas
         fps = round(256 / (step["time"] / 1000))
@@ -231,7 +231,7 @@ class Cutscene():
             self.scene_clock.tick(fps)
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Finished fading in canvas")
         return self.wannaSkip()
 
@@ -243,7 +243,7 @@ class Cutscene():
         #pos - [int, int] - Location for the center of the image
         #save - bool - If the board is redrawn from scratch, should this be included
         #time - int - Miliseconds for how long it takes to fade in        
-        if DEBUG:
+        if config.DEBUG:
             print("    Fading in image")
         old_surf = pygame.surface.Surface((800,600))
         old_surf.blit(self.game_window, (0,0))
@@ -259,7 +259,7 @@ class Cutscene():
             pygame.time.delay(delta)
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Done fading in image")
         return False
     
@@ -271,7 +271,7 @@ class Cutscene():
         #pos - [int, int] - Location for the center of the image
         #save - bool - If the board is redrawn from scratch, should this be included
         #time - int - Miliseconds for how long it takes to fade out  
-        if DEBUG:
+        if config.DEBUG:
             print("    Fading out image")
         old_surf = pygame.surface.Surface((800,600))
         old_surf.blit(self.game_window, (0,0))
@@ -286,7 +286,7 @@ class Cutscene():
             pygame.time.delay(delta)
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Done fading out image")
         return False
 
@@ -299,7 +299,7 @@ class Cutscene():
         #pos - [int, int] - Location for the center of the text
         #save - bool - If the board is redrawn from scratch, should this be included
         #time - int - Miliseconds for how long it takes to fade in  
-        if DEBUG:
+        if config.DEBUG:
             print("    Fading in text")
         old_surf = pygame.surface.Surface((800,600))
         old_surf.blit(self.game_window, (0,0))
@@ -316,7 +316,7 @@ class Cutscene():
             pygame.time.delay(delta)
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Done fading in text")
         return False
     
@@ -329,7 +329,7 @@ class Cutscene():
         #pos - [int, int] - Location for the center of the text
         #save - bool - If the board is redrawn from scratch, should this be included
         #time - int - Miliseconds for how long it takes to fade out 
-        if DEBUG:
+        if config.DEBUG:
             print("    Fading out text")
         old_surf = pygame.surface.Surface((800,600))
         old_surf.blit(self.game_window, (0,0))
@@ -345,92 +345,95 @@ class Cutscene():
             pygame.time.delay(delta)
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Done fading out text")
         return False
     
     def newCanvas(self, step):
-        if DEBUG:
+        #I stopped the detailed comments here because Christ Hawk help me
+        #this is an awful system. This did help me figure out a better way
+        #to do some of this though, so cool.
+        if config.DEBUG:
             print("    Making new canvas")
         self.canvas = pygame.surface.Surface(step["size"],pygame.SRCALPHA)
         self.canvas.fill(step["color"])
-        if DEBUG:
+        if config.DEBUG:
             print("    Finished making new canvas")
         return self.wannaSkip()
     
     def playMusic(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Playing music")
         chn = pygame.mixer.Channel(step["channel"])
         chn.play(self.music[step["name"]])
-        if DEBUG:
+        if config.DEBUG:
             print("    Done playing music")
         return self.wannaSkip()
     
     def playRestOfMusic(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Playing the rest of the music")
         chn = pygame.mixer.Channel(step["channel"])
         while chn.get_busy():
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Done playing the rest of the music")
         return False
     
     def playRestOfSound(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Playing the rest of sound")
         chn = pygame.mixer.Channel(step["channel"])
         while chn.get_busy():
             if self.wannaSkip():
                 return True
-        if DEBUG:
+        if config.DEBUG:
             print("    Done playing the rest sound")
         return False
     
     def playSound(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Start playing " + step["sound"])
         chn = pygame.mixer.Channel(step["channel"])
         chn.play(self.sounds[step["sound"]])
-        if DEBUG:
+        if config.DEBUG:
             print("    Now playing " + step["sound"])
         return self.wannaSkip()
     
     def resizeImage(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Starting to resize image")
         img = self.images[step["img"]]
         img = pygame.transform.scale(img, step["size"])
         self.images[step["img"]] = img
-        if DEBUG:
+        if config.DEBUG:
             print("    Finished resizing image")
         return self.wannaSkip()
  
     def restoreScreen(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Starting restore screen")
         self.game_window.blit(self.saved_screen,(0,0))
-        if DEBUG:
+        if config.DEBUG:
             print("    Finished restore screen")
         return self.wannaSkip()
     
     def saveScreen(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Starting save screen")
         self.saved_screen.blit(self.game_window,(0,0))
-        if DEBUG:
+        if config.DEBUG:
             print("    Finished save screen")
         return self.wannaSkip()
     
     def textOnCanvas(self, step):
-        if DEBUG:
+        if config.DEBUG:
             print("    Start text on canvas")
         text_surface = self.fonts[step["font"]].render(self.cs["text"][step["text"]], True, tuple(step["color"]))
         pos = self.centerSurfaceAt(text_surface, step["pos"])
         self.canvas.blit(text_surface,pos)
-        if DEBUG:
+        if config.DEBUG:
             print("    Finished text on canvas")
         return self.wannaSkip()
     
