@@ -118,7 +118,8 @@ class Snake:
 
     def eat(self):
         self.eaten = True
-        self.gulp.play()
+        if config.SOUND:
+            self.gulp.play()
         return
     
     def die(self):
@@ -128,8 +129,9 @@ class Snake:
         pygame.mixer.music.pause()
         ch1 = pygame.mixer.Channel(1)
         ch2 = pygame.mixer.Channel(2)
-        ch1.play(self.cry)
-        ch2.play(random.choice(self.deaths))
+        if config.SOUND:
+            ch1.play(self.cry)
+            ch2.play(random.choice(self.deaths))
         while ch1.get_busy() or ch2.get_busy():
             pass
         print("Dontcrash") #Why do I need this to not crash

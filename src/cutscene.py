@@ -365,6 +365,8 @@ class Cutscene():
         if config.DEBUG:
             print("    Playing music")
         chn = pygame.mixer.Channel(step["channel"])
+        if config.SOUND == False:
+            chn.set_volume(0)
         chn.play(self.music[step["name"]])
         if config.DEBUG:
             print("    Done playing music")
@@ -396,6 +398,8 @@ class Cutscene():
         if config.DEBUG:
             print("    Start playing " + step["sound"])
         chn = pygame.mixer.Channel(step["channel"])
+        if config.SOUND == False:
+            chn.set_volume(0)
         chn.play(self.sounds[step["sound"]])
         if config.DEBUG:
             print("    Now playing " + step["sound"])

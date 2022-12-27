@@ -1,6 +1,5 @@
 #Thomas Stambaugh
 #Really Bad Snake
-from imp import reload
 from json import load
 import pygame
 import random
@@ -77,6 +76,64 @@ def playGame(game_window):
     if config.DEBUG:
         print("Ending playGame()")
     return quit
+
+def settingsScreen(game_window):
+    blank_board = pygame.Surface((800, 600))
+    blank_board.fill(pygame.Color('#00FF00'))
+    game_window.blit(blank_board, (0,0))
+    settingsBg = pygame.image.load(config.BASEDIR + '/img/settings.jpg')
+    game_window.blit(settingsBg, (0,0))
+
+    return_button_pos = (580,480)
+    fullscreen_on_pos = (20, 490)
+    fullscreen_off_pos = (130, 490)
+    sound_on_pos = (420, 310)
+    sound_off_pos = (530, 310)
+
+    return_button = Button(config.BASEDIR + '/img/return.jpg', (200,100))
+    return_button.display(game_window, return_button_pos)
+    fullscreen_on_button = Button(config.BASEDIR + '/img/on.jpg', (100,100))
+    fullscreen_on_button.display(game_window, fullscreen_on_pos)
+    fullscreen_off_button = Button(config.BASEDIR + '/img/off.jpg', (100,100))
+    fullscreen_off_button.display(game_window, fullscreen_off_pos)
+    sound_button_on = Button(config.BASEDIR + '/img/on.jpg', (100,100))
+    sound_button_on.display(game_window, sound_on_pos)
+    sound_button_off = Button(config.BASEDIR + '/img/off.jpg', (100,100))
+    sound_button_off.display(game_window, sound_off_pos)
+
+    pygame.display.update()
+    go_back = False
+    while go_back == False:
+        for event in pygame.event.get():
+            #button clicks
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mousePos = pygame.mouse.get_pos()
+                if return_button.wasItClicked(mousePos):
+                    go_back = True
+                elif fullscreen_on_button.wasItClicked(mousePos):
+                    if config.FULL_SCREEN == False:
+                        config.FULL_SCREEN = True
+                        pygame.display.set_mode((800, 600), vsync=1, flags=pygame.FULLSCREEN)
+                        pygame.display.update()
+                elif fullscreen_off_button.wasItClicked(mousePos):
+                    if config.FULL_SCREEN == True:
+                        config.FULL_SCREEN = False
+                        pygame.display.set_mode((800, 600), vsync=1)
+                        pygame.display.update()
+                elif sound_button_off.wasItClicked(mousePos):
+                    if config.SOUND == True:
+                        config.SOUND = False
+                        pygame.mixer.music.stop()
+                elif sound_button_on.wasItClicked(mousePos):
+                    if config.SOUND == False:
+                        config.SOUND = True
+                        pygame.mixer.music.play(loops=-1)
+            #Windows exit button
+            elif event.type == pygame.QUIT:
+                return True
+    
+    
+    return False
     
 def exitScreen(game_window):
     #load files
@@ -104,6 +161,7 @@ def loadSettings():
                 print("line:" + line_str)
             index = line_str.find("=")
             if line_str[0:index] == "difficulty":
+                config.DIFFICULTY = line_str[index+1]
                 setDifficulty(line_str[index+1:])
             elif line_str[0:index] == "gore":
                 print("Herp derp: " + line_str[index+1:] + "#")
@@ -146,6 +204,7 @@ def main():
     deathPic = pygame.image.load(config.BASEDIR + '/img/title2.png')
     playButton = Button(config.BASEDIR + '/img/play.png', (200,100))
     quitButton = Button(config.BASEDIR + '/img/quit.png', (200,100))
+    settingsButton = Button(config.BASEDIR + '/img/settings.png', (200,50))
     creditsButton = Button(config.BASEDIR + '/img/credits.png', (200,50))
     icon = pygame.image.load(config.BASEDIR + '/img/icon.png')
     icon = pygame.transform.scale(icon,(32,32))
@@ -163,6 +222,7 @@ def main():
     game_window = pygame.display.set_mode((800, 600), vsync=1, flags=fs_option)
     playButtonPos = (200,400)
     quitButtonPos = (430,400)
+    settingsButtonPos = (200,520)
     creditsButtonPos = (430,520)
     quit = False
     reload_title = True
@@ -184,6 +244,9 @@ def main():
                     credits(game_window)
                     pygame.mixer.music.unpause()
                     reload_title = True
+                if settingsButton.wasItClicked(mousePos):
+                    quit = settingsScreen(game_window)
+                    reload_title = True
             #hot key for starting
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -200,6 +263,7 @@ def main():
             game_window.blit(titleScreen, (0,0))
             playButton.display(game_window, playButtonPos)
             quitButton.display(game_window, quitButtonPos)
+            settingsButton.display(game_window, settingsButtonPos)
             creditsButton.display(game_window, creditsButtonPos)
             pygame.display.update()
             

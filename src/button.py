@@ -24,8 +24,6 @@ class Button():
         return
         
     def wasItClicked(self, pos):
-        if DEBUG:
-            print("Position clicked was " + str(pos[0]) + ", " + str(pos[1]))
         if self.pos_rect.collidepoint(pos[0], pos[1]):
             if DEBUG:
                 print(self.filename + " was clicked")

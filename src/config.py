@@ -9,6 +9,7 @@ HIGH_SCORE = 0
 FULL_SCREEN = False
 START_SPEED = 5
 SCORE_SPEEDUP = 10
+DIFFICULTY = "0"
 DEBUG = True
 BASEDIR = ""
 #Board is X by Y, with 0,0 being the upper left corner. 
