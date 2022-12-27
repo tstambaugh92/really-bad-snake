@@ -16,8 +16,7 @@ thisFile = ""
 def playGame(game_window):
     snake = Snake()
     apple = Apple()
-    blank_board = pygame.Surface((800, 600))
-    blank_board.fill(pygame.Color('#000000'))
+    blank_board = pygame.image.load(config.BASEDIR + '/img/gameboard.png')
     
     snake_piece = pygame.Surface((config.BODY_SIZE,config.BODY_SIZE))
     snake_piece.fill(pygame.Color('#FF0000'))
@@ -113,12 +112,18 @@ def settingsScreen(game_window):
                 elif fullscreen_on_button.wasItClicked(mousePos):
                     if config.FULL_SCREEN == False:
                         config.FULL_SCREEN = True
+                        backup = pygame.Surface((800,600))
+                        backup.blit(game_window,(0,0))
                         pygame.display.set_mode((800, 600), vsync=1, flags=pygame.FULLSCREEN)
+                        game_window.blit(backup, (0,0))
                         pygame.display.update()
                 elif fullscreen_off_button.wasItClicked(mousePos):
                     if config.FULL_SCREEN == True:
                         config.FULL_SCREEN = False
+                        backup = pygame.Surface((800,600))
+                        backup.blit(game_window,(0,0))
                         pygame.display.set_mode((800, 600), vsync=1)
+                        game_window.blit(backup, (0,0))
                         pygame.display.update()
                 elif sound_button_off.wasItClicked(mousePos):
                     if config.SOUND == True:
