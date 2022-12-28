@@ -88,6 +88,11 @@ def settingsScreen(game_window):
     fullscreen_off_pos = (130, 490)
     sound_on_pos = (420, 310)
     sound_off_pos = (530, 310)
+    gore_on_pos = (20, 310)
+    gore_off_pos = (130, 310)
+    nesting_pos = (50, 130)
+    knighthawk_pos = (300 , 130)
+    hawkmaster_pos = (550, 130)
 
     return_button = Button(config.BASEDIR + '/img/return.jpg', (200,100))
     return_button.display(game_window, return_button_pos)
@@ -99,9 +104,29 @@ def settingsScreen(game_window):
     sound_button_on.display(game_window, sound_on_pos)
     sound_button_off = Button(config.BASEDIR + '/img/off.jpg', (100,100))
     sound_button_off.display(game_window, sound_off_pos)
+    gore_button_on = Button(config.BASEDIR + '/img/on.jpg', (100,100))
+    gore_button_on.display(game_window, gore_on_pos)
+    gore_button_off = Button(config.BASEDIR + '/img/off.jpg', (100,100))
+    gore_button_off.display(game_window, gore_off_pos)
+    nesting_button = Button(config.BASEDIR + '/img/nesting.png',(200,100))
+    nesting_button.display(game_window, nesting_pos)
+    knighthawk_button = Button(config.BASEDIR + '/img/knighthawk.png', (200,100))
+    knighthawk_button.display(game_window, knighthawk_pos)
+    hawkmaster_button = Button(config.BASEDIR + '/img/hawkmaster.png', (200,100))
+    hawkmaster_button.display(game_window, hawkmaster_pos)
 
-    pygame.display.update()
+    highlight_box = pygame.Surface((100,100))
+    highlight_box.set_alpha(128)
+    highlight_box.fill('#FFFF66')
+    highlight_rect = pygame.Surface((200,100))
+    highlight_rect.set_alpha(128)
+    highlight_rect.fill('#FFFF66')
+
+    base_background = pygame.Surface((800,600))
+    base_background.blit(game_window, (0,0))
+
     go_back = False
+    redraw = True
     while go_back == False:
         for event in pygame.event.get():
             #button clicks
@@ -112,30 +137,70 @@ def settingsScreen(game_window):
                 elif fullscreen_on_button.wasItClicked(mousePos):
                     if config.FULL_SCREEN == False:
                         config.FULL_SCREEN = True
-                        backup = pygame.Surface((800,600))
-                        backup.blit(game_window,(0,0))
                         pygame.display.set_mode((800, 600), vsync=1, flags=pygame.FULLSCREEN)
-                        game_window.blit(backup, (0,0))
-                        pygame.display.update()
+                        redraw = True
                 elif fullscreen_off_button.wasItClicked(mousePos):
                     if config.FULL_SCREEN == True:
                         config.FULL_SCREEN = False
-                        backup = pygame.Surface((800,600))
-                        backup.blit(game_window,(0,0))
                         pygame.display.set_mode((800, 600), vsync=1)
-                        game_window.blit(backup, (0,0))
-                        pygame.display.update()
+                        redraw = True
                 elif sound_button_off.wasItClicked(mousePos):
                     if config.SOUND == True:
                         config.SOUND = False
+                        redraw = True
                         pygame.mixer.music.stop()
                 elif sound_button_on.wasItClicked(mousePos):
                     if config.SOUND == False:
                         config.SOUND = True
+                        redraw = True
                         pygame.mixer.music.play(loops=-1)
+                elif gore_button_on.wasItClicked(mousePos):
+                    if config.GORE == False:
+                        config.GORE = True
+                        redraw = True
+                elif gore_button_off.wasItClicked(mousePos):
+                    if config.GORE == True:
+                        config.GORE = False
+                        redraw = True
+                elif nesting_button.wasItClicked(mousePos):
+                    if config.DIFFICULTY != 0:
+                        setDifficulty(0)
+                        redraw = True
+                elif knighthawk_button.wasItClicked(mousePos):
+                    if config.DIFFICULTY != 1:
+                        setDifficulty(1)
+                        redraw = True
+                elif hawkmaster_button.wasItClicked(mousePos):
+                    if config.DIFFICULTY != 2:
+                        setDifficulty(2)
+                        redraw = True
             #Windows exit button
             elif event.type == pygame.QUIT:
                 return True
+
+        if redraw:
+            redraw = False
+            game_window.fill(pygame.Color('#000000'))
+            game_window.blit(base_background,(0,0))
+            if config.FULL_SCREEN:
+                game_window.blit(highlight_box,fullscreen_on_pos)
+            else:
+                game_window.blit(highlight_box,fullscreen_off_pos)
+            if config.SOUND:
+                game_window.blit(highlight_box,sound_on_pos)
+            else:
+                game_window.blit(highlight_box,sound_off_pos)
+            if config.GORE:
+                game_window.blit(highlight_box,gore_on_pos)
+            else:
+                game_window.blit(highlight_box,gore_off_pos)
+            if config.DIFFICULTY == 0:
+                game_window.blit(highlight_rect, nesting_pos)
+            elif config.DIFFICULTY == 1:
+                game_window.blit(highlight_rect, knighthawk_pos)
+            else:
+                game_window.blit(highlight_rect, hawkmaster_pos)
+            pygame.display.update()
     
     
     return False
@@ -154,7 +219,19 @@ def credits(game_window):
 
 def setDifficulty(setting):
     if config.DEBUG:
-        print("Still working on difficulty")
+        print("Difficulty is " + str(setting))
+    if setting == 0:
+        config.DIFFICULTY = 0
+        config.START_SPEED = 8
+        config.SCORE_SPEEDUP = 50
+    elif setting == 1:
+        config.DIFFICULTY = 1
+        config.START_SPEED = 7
+        config.SCORE_SPEEDUP = 40
+    elif setting == 2:
+        config.DIFFICULTY = 2
+        config.START_SPEED = 6
+        config.SCORE_SPEEDUP = 30
     return
 
 def loadSettings():
@@ -167,15 +244,12 @@ def loadSettings():
             index = line_str.find("=")
             if line_str[0:index] == "difficulty":
                 config.DIFFICULTY = line_str[index+1]
-                setDifficulty(line_str[index+1:])
+                setDifficulty(int(line_str[index+1:]))
             elif line_str[0:index] == "gore":
-                print("Herp derp: " + line_str[index+1:] + "#")
                 if line_str[index+1:] == "True":
                     config.GORE = True
-                    print("Herp")
                 else:
                     config.GORE = False
-                    print("Derp")
             elif line_str[0:index] == "sound":
                 if line_str[index+1:] == "True":
                     config.SOUND = True
@@ -251,6 +325,8 @@ def main():
                     reload_title = True
                 if settingsButton.wasItClicked(mousePos):
                     quit = settingsScreen(game_window)
+                    if config.GORE == False:
+                        titleScreen = titlePic
                     reload_title = True
             #hot key for starting
             elif event.type == pygame.KEYDOWN:
