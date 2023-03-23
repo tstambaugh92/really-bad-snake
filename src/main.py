@@ -44,6 +44,9 @@ def playGame(game_window):
                     direction = 'W'
                 elif event.key == pygame.K_d:
                     direction = 'E'
+                elif config.DEBUG and event.key == pygame.K_m:
+                    pauseToDebug(game_window,snake)
+
                 snake.addMove(direction)
                 if config.DEBUG:
                     print("Direction switched: " + direction)
@@ -60,6 +63,7 @@ def playGame(game_window):
             pygame.display.set_caption('Very Bad Snake - Score: ' + str(score))
             apple.regrow(snake.getBody())
         
+
         #graphics
         if game_is_running:
             game_window.blit(blank_board, (0, 0))
@@ -75,6 +79,37 @@ def playGame(game_window):
     if config.DEBUG:
         print("Ending playGame()")
     return quit
+
+def pauseToDebug(game_window, snake):
+    #debug pause
+    pygame.event.clear
+    print("Snake's full body: ")
+    print(snake.getBody())
+    print("Snake's body directions:")
+    print(snake.getBodyDirections())
+    print("Snake's current direction:")
+    print(snake.getCurrentDirection())
+    debug_pause = True 
+    debug_font = pygame.font.Font(None, 12)
+    for i in range(config.BOARD_WIDTH):
+        for j in range(config.BOARD_HEIGHT):
+            coordinates = debug_font.render("(" + str(i) + "," + str(j) + ")", True, (0,0,0))
+            coordinates_rect = coordinates.get_rect()
+            coordinates_x_pos = config.BODY_SIZE*i + config.BODY_SIZE/2 - coordinates_rect.w/2
+            coordinates_y_pos = config.BODY_SIZE*j + config.BODY_SIZE/2 - coordinates_rect.h/2
+            game_window.blit(coordinates, (coordinates_x_pos,coordinates_y_pos))
+    #vert grid lines
+    for i in range(config.BOARD_WIDTH):
+        pygame.draw.line(game_window, (255,255,255), (i*config.BODY_SIZE,0),(i*config.BODY_SIZE,config.BOARD_HEIGHT*config.BODY_SIZE))
+    #horizontal grid lines
+    for j in range(config.BOARD_WIDTH):
+        pygame.draw.line(game_window, (255,255,255), (0,j*config.BODY_SIZE),(config.BOARD_WIDTH*config.BODY_SIZE,j*config.BODY_SIZE))
+    pygame.display.update()
+    while debug_pause:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    debug_pause = False
 
 def settingsScreen(game_window):
     blank_board = pygame.Surface((800, 600))

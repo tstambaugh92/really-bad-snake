@@ -25,15 +25,33 @@ class Snake:
         self.move_queue = []
         self.img = {}
         self.loadBodyImages()
+        self.move_offset = 0
 
     def getBody(self):
         return self.body
+
+    def getBodyDirections(self):
+        return self.body_direction
+
+    def getCurrentDirection(self):
+        return self.direction
     
     def getBodyImages(self):
         images = []
         last = len(self.body_direction) - 1
+        shifted_body = []
         for index in range(0,len(self.body_direction)):
             str = ""
+                
+            if self.body_direction[index] == 'E':
+                shifted_body.append([sum(a) for a in zip(self.body[index], [1.0*self.move_offset/self.max_move_delay,0])])
+            elif self.body_direction[index] == 'W':
+                shifted_body.append([sum(a) for a in zip(self.body[index], [1-1.0*self.move_offset/self.max_move_delay,0])])
+            elif self.body_direction[index] == 'N':
+                shifted_body.append([sum(a) for a in zip(self.body[index], [0,1-1.0*self.move_offset/self.max_move_delay])])
+            elif self.body_direction[index] == 'S':
+                shifted_body.append([sum(a) for a in zip(self.body[index], [0,1.0*self.move_offset/self.max_move_delay])])
+            
             if index == 0: #head
                 str = "head" + self.body_direction[index]
             elif index == last: #tail
@@ -61,18 +79,22 @@ class Snake:
                     elif ((self.body_direction[index] == 'E' and self.body_direction[index-1] == 'S')
                     or    (self.body_direction[index] == 'N' and self.body_direction[index-1] == 'W')):
                         str = "cornerSW"
+                    shifted_body[-1] = self.body[index] #dont move corners
             images.append(self.img[str])
-        return zip(images, self.body)
+        #return zip(images, self.body)
+        return zip(images, shifted_body)
     
     def getHead(self):
         return self.body[0]
     
     def move(self):
         self.move_delay = self.move_delay - 1
+        self.move_offset = self.move_offset + 1
         new_pos = self.getHead().copy()
           
             
         if self.move_delay == 0:
+            self.move_offset = 0
             if len(self.move_queue) > 0:
                 direction = self.move_queue.pop(0)
             else:
