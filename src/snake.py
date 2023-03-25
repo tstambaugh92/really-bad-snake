@@ -44,13 +44,13 @@ class Snake:
             str = ""
                 
             if self.body_direction[index] == 'E':
-                shifted_body.append([sum(a) for a in zip(self.body[index], [1.0*self.move_offset/self.max_move_delay,0])])
+                shifted_body.append([sum(a) for a in zip(self.body[index], [1.0*self.move_offset/self.max_move_delay -1,0])])
             elif self.body_direction[index] == 'W':
                 shifted_body.append([sum(a) for a in zip(self.body[index], [1-1.0*self.move_offset/self.max_move_delay,0])])
             elif self.body_direction[index] == 'N':
                 shifted_body.append([sum(a) for a in zip(self.body[index], [0,1-1.0*self.move_offset/self.max_move_delay])])
             elif self.body_direction[index] == 'S':
-                shifted_body.append([sum(a) for a in zip(self.body[index], [0,1.0*self.move_offset/self.max_move_delay])])
+                shifted_body.append([sum(a) for a in zip(self.body[index], [0,1.0*self.move_offset/self.max_move_delay - 1])])
             
             if index == 0: #head
                 str = "head" + self.body_direction[index]

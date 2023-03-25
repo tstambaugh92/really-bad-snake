@@ -27,6 +27,8 @@ def playGame(game_window):
     score = 0
     quit = False
     game_is_running = True
+    draw_grid = False
+    slow_down = False
     
     while game_is_running: #main loop
         #user input
@@ -44,8 +46,15 @@ def playGame(game_window):
                     direction = 'W'
                 elif event.key == pygame.K_d:
                     direction = 'E'
+                elif event.key == pygame.K_ESCAPE:
+                    game_is_running = False
+                    quit = True
                 elif config.DEBUG and event.key == pygame.K_m:
                     pauseToDebug(game_window,snake)
+                elif config.DEBUG and event.key == pygame.K_n:
+                    draw_grid = not draw_grid
+                elif config.DEBUG and event.key == pygame.K_b:
+                    slow_down = not slow_down
 
                 snake.addMove(direction)
                 if config.DEBUG:
@@ -70,10 +79,15 @@ def playGame(game_window):
             for body, pos in snake.getBodyImages():
                 game_window.blit(body, (pos[0] * config.BODY_SIZE, pos[1] * config.BODY_SIZE))
             game_window.blit(apple.getImg(), (apple.getX() * config.BODY_SIZE, apple.getY() * config.BODY_SIZE))
+            if draw_grid:
+                drawGrid(game_window)
             pygame.display.update()
-        
-        #wait
-        pygame.time.wait(int(1000/60)) #1/60th of a second, or '60fps'
+
+        #Wait for next frame    
+        if slow_down:
+            pygame.time.wait(300)
+        else:
+            pygame.time.wait(int(1000/60)) #1/60th of a second, or '60fps'
         
     pygame.event.clear 
     if config.DEBUG:
@@ -90,6 +104,15 @@ def pauseToDebug(game_window, snake):
     print("Snake's current direction:")
     print(snake.getCurrentDirection())
     debug_pause = True 
+    drawGrid(game_window)
+    pygame.display.update()
+    while debug_pause:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_m:
+                    debug_pause = False
+
+def drawGrid(game_window):
     debug_font = pygame.font.Font(None, 12)
     for i in range(config.BOARD_WIDTH):
         for j in range(config.BOARD_HEIGHT):
@@ -102,14 +125,10 @@ def pauseToDebug(game_window, snake):
     for i in range(config.BOARD_WIDTH):
         pygame.draw.line(game_window, (255,255,255), (i*config.BODY_SIZE,0),(i*config.BODY_SIZE,config.BOARD_HEIGHT*config.BODY_SIZE))
     #horizontal grid lines
+    
     for j in range(config.BOARD_WIDTH):
         pygame.draw.line(game_window, (255,255,255), (0,j*config.BODY_SIZE),(config.BOARD_WIDTH*config.BODY_SIZE,j*config.BODY_SIZE))
-    pygame.display.update()
-    while debug_pause:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_m:
-                    debug_pause = False
+    
 
 def settingsScreen(game_window):
     blank_board = pygame.Surface((800, 600))
